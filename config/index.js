@@ -1,4 +1,5 @@
 
+// 生产环境配置
 let config = {
   debug: false,
   host: 'localhost',

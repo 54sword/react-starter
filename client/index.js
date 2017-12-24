@@ -1,17 +1,15 @@
-
 import React from 'react'
 import ReactDOM from 'react-dom'
 import { BrowserRouter } from 'react-router-dom'
-import { Route } from 'react-router-dom'
 import { Provider } from 'react-redux'
 
 import configureStore from '../src/store'
+import { Router } from '../src/router'
 
-import Router from '../src/router'
-
+// 从页面中获取服务端生产redux数据，作为客户端redux初始值
 const store = configureStore(window.__initState__)
 
-ReactDOM.render((
+ReactDOM.hydrate((
   <Provider store={store}>
     <BrowserRouter>
       <Router />

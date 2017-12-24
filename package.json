@@ -1,0 +1,50 @@
+{
+  "name": "react-starter",
+  "version": "0.1.0",
+  "description": "react-starter",
+  "scripts": {
+    "dev": "NODE_ENV=development __NODE__=false webpack --progress --colors --config webpack.development.config.js && NODE_ENV=development __NODE__=true node server",
+    "pro": "NODE_ENV=production __NODE__=false webpack --progress --colors --config webpack.production.config.js && NODE_ENV=production __NODE__=true node server"
+  },
+  "engines": {
+    "node": ">=8.6.0"
+  },
+  "author": "sword <54sword@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "babel-polyfill": "^6.26.0",
+    "body-parser": "^1.18.2",
+    "compression": "^1.7.1",
+    "css-modules-require-hook": "^4.2.2",
+    "ejs": "^2.5.7",
+    "express": "^4.16.2",
+    "lodash": "^4.17.4",
+    "node-sass": "^4.7.2",
+    "promise": "^8.0.1",
+    "react": "^16.2.0",
+    "react-css-modules": "^4.7.1",
+    "react-dom": "^16.2.0",
+    "react-redux": "^5.0.6",
+    "react-router": "^4.2.0",
+    "react-router-dom": "^4.2.2",
+    "redux": "^3.7.2",
+    "redux-logger": "^3.0.6",
+    "redux-thunk": "^2.2.0"
+  },
+  "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.2",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-react": "^6.24.1",
+    "babel-preset-stage-0": "^6.24.1",
+    "clean-webpack-plugin": "^0.1.17",
+    "css-loader": "^0.28.7",
+    "extract-text-webpack-plugin": "^3.0.2",
+    "html-webpack-plugin": "^2.30.1",
+    "sass-loader": "^6.0.6",
+    "style-loader": "^0.19.1",
+    "webpack": "^3.10.0",
+    "webpack-dev-server": "^2.9.7",
+    "webpack-hot-middleware": "^2.21.0"
+  }
+}

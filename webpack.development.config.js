@@ -3,33 +3,23 @@ var HtmlwebpackPlugin = require('html-webpack-plugin')
 var path = require('path')
 var ExtractTextPlugin = require('extract-text-webpack-plugin')
 var CleanWebpackPlugin = require('clean-webpack-plugin')
+// var ServiceWorkerWebpackPlugin = require('serviceworker-webpack-plugin')
 
 var config = require('./config')
 
-
-// let extractCSS = new ExtractTextPlugin('[name].[hash].css');
-
 const extractSass = new ExtractTextPlugin({
-    filename: "[name].css",
-    // disable: true
-});
-
-// console.log(process.env.__NODE__);
+  filename: "[name].css",
+  disable: true
+})
 
 module.exports = {
 
   devtool: 'source-map',
-  devServer: {
-    // Service Workers 依赖 HTTPS，使用 DevServer 提供的 HTTPS 功能。
-    https: true,
-    // contentBase: './dist',
-    // hot: true
-  },
 
   entry: {
     app: [
-      'webpack-hot-middleware/client?path=/__webpack_hmr&timeout=20000&reload=true',
-      './client/index'
+      './client/index',
+      'webpack-hot-middleware/client?path=/__webpack_hmr&timeout=20000&reload=true'
     ]
   },
 
@@ -142,35 +132,24 @@ module.exports = {
 
   plugins: [
 
+    // 定义环境变量
     new webpack.DefinePlugin({
+      // 是否是生产环境
       'process.env': {
         NODE_ENV: JSON.stringify(process.env.NODE_ENV),
       },
-      '__NODE__': JSON.stringify(process.env.__NODE__)
+      // 是否是 Node
+      '__NODE__': JSON.stringify(process.env.__NODE__),
+      // 是否是开发环境
+      '__DEV__': JSON.stringify(process.env.NODE_ENV == 'development')
     }),
 
     extractSass,
 
-    // 清空打包目录
-    // new CleanWebpackPlugin(['dist'], {
-    //   root: path.resolve(__dirname),
-    //   verbose: true,
-    //   dry: false
-    // }),
-    //
-
-
-
     new webpack.optimize.CommonsChunkPlugin({
-      name: 'vendor',
-      filename: 'vendor.bundle.js'
+      name: 'common',
+      filename: 'common.bundle.js'
     }),
-
-    // new ExtractTextPlugin('styles.css', {
-    //   allChunks: true
-    // }),
-
-    // new ExtractTextPlugin("common.css"),
 
     new HtmlwebpackPlugin({
       filename: path.resolve(__dirname, 'dist/index.ejs'),
@@ -185,6 +164,11 @@ module.exports = {
     // new webpack.optimize.OccurrenceOrderPlugin(),
     // new webpack.NamedModulesPlugin(),
     new webpack.HotModuleReplacementPlugin(),
-    new webpack.NoEmitOnErrorsPlugin()
+    new webpack.NoEmitOnErrorsPlugin(),
+
+    // new ServiceWorkerWebpackPlugin({
+    //   entry: path.join(__dirname, 'client/sw.js'),
+    // })
+
   ]
 }

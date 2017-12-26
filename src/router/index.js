@@ -3,6 +3,8 @@ import ReactDOM from 'react-dom'
 import { Route, Switch, Redirect } from 'react-router-dom'
 import Promise from 'promise'
 
+import '../pages/global.scss'
+
 // pages
 import Home from '../pages/home'
 import Posts from '../pages/posts'

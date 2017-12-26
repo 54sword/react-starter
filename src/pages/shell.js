@@ -6,8 +6,6 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 // import { update } from '../../actions/account'
 
-// import Promise from 'promise'
-
 import parseUrl from '../common/parse-url'
 
 const Shell = (Component) => {

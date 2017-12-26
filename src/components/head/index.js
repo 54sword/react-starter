@@ -1,5 +1,8 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { Link, NavLink } from 'react-router-dom'
+
+import CSSModules from 'react-css-modules'
+import styles from './style.scss'
 
 export class Head extends React.Component {
 
@@ -8,13 +11,17 @@ export class Head extends React.Component {
   }
 
   render() {
-    return(<ul>
-        <li><Link to="/">Home</Link></li>
-        <li><Link to="/posts">Posts</Link></li>
-        <li><Link to="/topics">Topics</Link></li>
-      </ul>)
+    return(<div styleName="head">
+      <ul>
+        <li><NavLink exact to="/">Home1333</NavLink></li>
+        <li><NavLink exact to="/posts">Posts</NavLink></li>
+        <li><NavLink exact to="/topics">Topics</NavLink></li>
+      </ul>
+    </div>)
   }
 
 }
+
+Head = CSSModules(Head, styles)
 
 export default Head

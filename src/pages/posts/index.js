@@ -39,7 +39,7 @@ export class Posts extends React.Component {
       <div>
 
       <div>
-        <h2 styleName="h2">Posts</h2>
+        <h2 styleName="h2">Posts111</h2>
         {/*
         <ul>
           <li>

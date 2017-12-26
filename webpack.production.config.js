@@ -3,6 +3,7 @@ var HtmlwebpackPlugin = require('html-webpack-plugin')
 var path = require('path')
 var ExtractTextPlugin = require('extract-text-webpack-plugin')
 var CleanWebpackPlugin = require('clean-webpack-plugin')
+var ServiceWorkerWebpackPlugin = require('serviceworker-webpack-plugin')
 
 var config = require('./config')
 
@@ -125,5 +126,11 @@ module.exports = {
     // new webpack.optimize.OccurrenceOrderPlugin(),
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NoEmitOnErrorsPlugin(),
+
+
+    new ServiceWorkerWebpackPlugin({
+      entry: path.join(__dirname, 'client/sw.js'),
+    })
+
   ]
 }

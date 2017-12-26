@@ -19,10 +19,12 @@ const extractSass = new ExtractTextPlugin({
 module.exports = {
 
   devtool: 'source-map',
-  // devServer: {
-  //   contentBase: './dist',
-  //   hot: true
-  // },
+  devServer: {
+    // Service Workers 依赖 HTTPS，使用 DevServer 提供的 HTTPS 功能。
+    https: true,
+    // contentBase: './dist',
+    // hot: true
+  },
 
   entry: {
     app: [
@@ -140,6 +142,13 @@ module.exports = {
 
   plugins: [
 
+    new webpack.DefinePlugin({
+      'process.env': {
+        NODE_ENV: JSON.stringify(process.env.NODE_ENV),
+      },
+      '__NODE__': JSON.stringify(process.env.__NODE__)
+    }),
+
     extractSass,
 
     // 清空打包目录
@@ -162,13 +171,6 @@ module.exports = {
     // }),
 
     // new ExtractTextPlugin("common.css"),
-
-    new webpack.DefinePlugin({
-      'process.env': {
-        NODE_ENV: JSON.stringify(process.env.NODE_ENV),
-      },
-      '__NODE__': JSON.stringify(process.env.__NODE__)
-    }),
 
     new HtmlwebpackPlugin({
       filename: path.resolve(__dirname, 'dist/index.ejs'),

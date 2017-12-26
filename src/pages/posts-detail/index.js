@@ -9,17 +9,9 @@ import { update } from '../../actions/account'
 import CSSModules from 'react-css-modules'
 import styles from './style.scss'
 
-import Shell from '../shell'
-
-const Topic = ({ match }) => (
-  <div>
-    <h3>{match.params.topicId}</h3>
-  </div>
-)
-
 
 // 纯组件
-export class Posts extends React.Component {
+export class PostsDetail extends React.Component {
 
   constructor(props) {
     super(props)
@@ -28,9 +20,7 @@ export class Posts extends React.Component {
   }
 
   componentDidMount() {
-    this.props.update('ttt')
-
-    console.log(this.props.location.params);
+    // this.props.update('ttt')
   }
 
   render() {
@@ -39,7 +29,7 @@ export class Posts extends React.Component {
       <div>
 
       <div>
-        <h2 styleName="h2">Posts</h2>
+        <h2 styleName="h2">PostsDetail</h2>
         {/*
         <ul>
           <li>
@@ -73,9 +63,9 @@ export class Posts extends React.Component {
 
 }
 
-Posts = CSSModules(Posts, styles)
+PostsDetail = CSSModules(PostsDetail, styles)
 
-Posts.propTypes = {
+PostsDetail.propTypes = {
   update: PropTypes.func.isRequired
 }
 
@@ -90,6 +80,6 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 
-Posts = connect(mapStateToProps,mapDispatchToProps)(Posts)
+PostsDetail = connect(mapStateToProps,mapDispatchToProps)(PostsDetail)
 
-export default Shell(Posts)
+export default PostsDetail

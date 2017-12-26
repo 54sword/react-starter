@@ -6,15 +6,14 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { update } from '../../actions/account'
 
-// const Topic = ({ match }) => (
-//   <div>
-//     <h3>{match.params.topicId}</h3>
-//   </div>
-// )
+import Promise from 'promise'
+
+
+import Shell from '../shell'
 
 
 // 纯组件
-export class Topics extends React.Component {
+export class Topics extends React.PureComponent {
 
   constructor(props) {
     super(props)
@@ -23,7 +22,8 @@ export class Topics extends React.Component {
   }
 
   componentDidMount() {
-    this.props.update('qqq')
+    // this.props.update('qqq')
+    // console.log(this);
   }
 
   render() {
@@ -38,23 +38,23 @@ export class Topics extends React.Component {
 }
 
 // Topics = CSSModules(Topics, styles)
+//
+// Topics.propTypes = {
+//   update: PropTypes.func.isRequired
+// }
+//
+// const mapStateToProps = (state, props) => {
+//   return {
+//   }
+// }
+//
+// const mapDispatchToProps = (dispatch) => {
+//   return {
+//     update: bindActionCreators(update, dispatch)
+//   }
+// }
+//
+// Topics = connect(mapStateToProps,mapDispatchToProps)(Topics)
 
-Topics.propTypes = {
-  update: PropTypes.func.isRequired
-}
 
-const mapStateToProps = (state, props) => {
-  return {
-  }
-}
-
-const mapDispatchToProps = (dispatch) => {
-  return {
-    update: bindActionCreators(update, dispatch)
-  }
-}
-
-Topics = connect(mapStateToProps,mapDispatchToProps)(Topics)
-
-
-export default Topics
+export default Shell(Topics)

@@ -6,7 +6,9 @@ import Promise from 'promise'
 // pages
 import Home from '../pages/home'
 import Posts from '../pages/posts'
+import PostsDetail from '../pages/posts-detail'
 import Topics from '../pages/topics'
+import SignIn from '../pages/sign-in'
 import NotFound from '../pages/not-found'
 
 // components
@@ -14,6 +16,18 @@ import Head from '../components/head'
 
 // actions
 import { update } from '../actions/account'
+
+// 登录验证
+function requireAuth(Layout, props) {
+
+  // console.log(props);
+
+  if (true) { // 未登录
+    return <Redirect to="/sign-in" />;
+  } else {
+    return <Layout {...props} />
+  }
+}
 
 const routeArr = [
   {
@@ -35,22 +49,46 @@ const routeArr = [
   },
   {
     path: '/posts',
+    exact: true,
     component: Posts,
     head: Head,
     loadData: () => {
       console.log('帖子');
     }
   },
+
+  {
+    path: '/posts/:id',
+    exact: true,
+    component: PostsDetail,
+    head: Head,
+    loadData: () => {
+      console.log('帖子详情');
+    }
+  },
+
   {
     path: '/topics',
-    component: Topics,
+    exact: true,
+    component: props => requireAuth(Topics, props),
     head: Head,
     loadData: () => {
       console.log('话题');
     }
   },
+
   {
-    // path: '/topics',
+    path: '/sign-in',
+    exact: true,
+    component: SignIn,
+    head: Head,
+    loadData: () => {
+      console.log('登陆');
+    }
+  },
+
+  {
+    path: '**',
     component: NotFound,
     head: Head,
     loadData: () => {
@@ -59,29 +97,30 @@ const routeArr = [
   }
 ]
 
+
 let router = () => (
   <div>
 
     <Switch>
-    {routeArr.map((route, index) => (
-      <Route
-        key={index}
-        path={route.path}
-        exact={route.exact}
-        component={route.head}
-        />
-    ))}
+      {routeArr.map((route, index) => (
+        <Route
+          key={index}
+          path={route.path}
+          exact={route.exact}
+          component={route.head}
+          />
+      ))}
     </Switch>
 
     <Switch>
-    {routeArr.map((route, index) => (
-      <Route
-        key={index}
-        path={route.path}
-        exact={route.exact}
-        component={route.component}
-        />
-    ))}
+      {routeArr.map((route, index) => (
+        <Route
+          key={index}
+          path={route.path}
+          exact={route.exact}
+          component={route.component}
+          />
+      ))}
     </Switch>
 
   </div>

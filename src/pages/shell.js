@@ -20,22 +20,22 @@ const Shell = (Component) => {
     componentWillMount() {
       const { search } = this.props.location
       this.props.location.params = search ? parseUrl(search) : null
-      console.log('进入组件')
+      // console.log('进入组件')
     }
 
     // 组件加载完成
     componentDidMount() {
-      console.log('组件加载完成');
+      // console.log('组件加载完成');
     }
 
     // 更新组件
     componentDidUpdate() {
-      console.log('组件加载更新了');
+      // console.log('组件加载更新了');
     }
 
     // 组件被卸载
     componentWillUnmount() {
-      console.log('组件加载被卸载');
+      // console.log('组件加载被卸载');
     }
 
     render() {

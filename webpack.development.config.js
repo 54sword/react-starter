@@ -8,8 +8,8 @@ var CleanWebpackPlugin = require('clean-webpack-plugin')
 var config = require('./config')
 
 const extractSass = new ExtractTextPlugin({
-  filename: "[name].css",
-  disable: true
+  filename: "[name].css"
+  // disable: true
 })
 
 module.exports = {
@@ -19,14 +19,15 @@ module.exports = {
   entry: {
     app: [
       './client/index',
-      'webpack-hot-middleware/client?path=/__webpack_hmr&timeout=20000&reload=true'
+      // 'webpack-hot-middleware/client?path=/__webpack_hmr&timeout=20000&reload=true'
+      'webpack-hot-middleware/client?noInfo=true&reload=true'
     ]
   },
 
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: '[name].bundle.js',
-    publicPath: config.assets_path + "/"
+    publicPath: config.assets_url + "/"
   },
 
   resolveLoader: {
@@ -161,8 +162,8 @@ module.exports = {
       reduxState: '<%- reduxState %>'
     }),
 
-    // new webpack.optimize.OccurrenceOrderPlugin(),
-    // new webpack.NamedModulesPlugin(),
+    new webpack.optimize.OccurrenceOrderPlugin(),
+    new webpack.NamedModulesPlugin(),
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NoEmitOnErrorsPlugin(),
 

@@ -23,7 +23,7 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: '[name].[hash].js',
-    publicPath: config.assets_path + "/"
+    publicPath: config.assets_url + "/"
   },
 
   resolveLoader: {

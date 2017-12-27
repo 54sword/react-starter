@@ -29,8 +29,7 @@ export class Posts extends React.Component {
 
   componentDidMount() {
     this.props.update('ttt')
-
-    console.log(this.props.location.params);
+    // console.log(this.props.location.params);
   }
 
   render() {

@@ -99,13 +99,13 @@ app.get('*', async function(req, res){
 
   let result = null
 
-  console.log(_match);
+  // console.log(_match);
 
   if (_route && _match && _route.loadData) {
     result = await _route.loadData({ store, match: _match })
   }
 
-  const html = ReactDOMServer.renderToString(
+  let html = ReactDOMServer.renderToString(
     <Provider store={store}>
       <StaticRouter location={req.url} context={context}>
         <Router />
@@ -113,8 +113,9 @@ app.get('*', async function(req, res){
     </Provider>
   )
 
-  let reduxState = JSON.stringify(store.getState())
-  // .replace(/</g, '\\x3c');
+  // console.log(html);
+
+  let reduxState = JSON.stringify(store.getState()).replace(/</g, '\\x3c');
 
   // if (context.url) {
   //   res.writeHead(301, {
@@ -122,6 +123,12 @@ app.get('*', async function(req, res){
   //   })
   //   res.end()
   // } else {
+  //
+
+  if (process.env.NODE_ENV === 'development') {
+    html = ''
+  }
+
     res.render('../dist/index.ejs', { html, reduxState })
     res.end()
   // }

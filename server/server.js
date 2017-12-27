@@ -69,17 +69,34 @@ app.use(bodyParser.urlencoded({ extended: true }))
 app.use(compress())
 app.use(express.static(__dirname + '/../dist'))
 
+
+app.use(function (req, res, next) {
+  // 计算页面加载完成花费的时间
+  var exec_start_at = Date.now()
+  var _send = res.render
+  res.render = function () {
+    if (process.env.NODE_ENV === 'development') {
+      console.log(req.url + ' ' + String(Date.now() - exec_start_at) + ' ms')
+    } else {
+      // 发送Header
+      res.set('X-Execution-Time', String(Date.now() - exec_start_at) + ' ms')
+    }
+    // 调用原始处理函数
+    return _send.apply(res, arguments)
+  }
+  next()
+})
+
 app.get('*', async function(req, res){
 
   const store = configureStore({})
 
-  const context = {
-    'test': 'test'
-  }
+  // const context = {
+  //   'test': 'test'
+  // }
 
   let _route = null,
       _match = null
-
 
   RouteArr.some(route => {
     let match = matchPath(req.url.split('?')[0], route)
@@ -92,18 +109,17 @@ app.get('*', async function(req, res){
 
   // if (!_route || !_match) {
   //   let reduxState = JSON.stringify(store.getState())
+  //   res.status(404)
   //   res.render('../dist/index.ejs', { html: '', reduxState })
   //   res.end()
   //   return
   // }
 
-  let result = null
+  // let result = null
 
-  // console.log(_match);
-
-  if (_route && _match && _route.loadData) {
-    result = await _route.loadData({ store, match: _match })
-  }
+  // if (_route && _match && _route.loadData) {
+  let context = await _route.loadData({ store, match: _match })
+  // }
 
   let html = ReactDOMServer.renderToString(
     <Provider store={store}>
@@ -125,10 +141,11 @@ app.get('*', async function(req, res){
   // } else {
   //
 
-  if (process.env.NODE_ENV === 'development') {
-    html = ''
-  }
+  // if (process.env.NODE_ENV === 'development') {
+  //   html = ''
+  // }
 
+    res.status(context.code)
     res.render('../dist/index.ejs', { html, reduxState })
     res.end()
   // }

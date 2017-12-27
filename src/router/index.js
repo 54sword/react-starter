@@ -43,7 +43,7 @@ const routeArr = [
       return new Promise(function (resolve, reject) {
         // setTimeout(function () {
           store.dispatch(update('777'))
-          resolve({ resr: '123' });
+          resolve({ code:200, resr: '123' });
         // }, 3000);
       })
 
@@ -54,8 +54,11 @@ const routeArr = [
     exact: true,
     component: Posts,
     head: Head,
-    loadData: () => {
+    loadData: ({ store, match }) => {
       console.log('帖子');
+      return new Promise(function (resolve, reject) {
+        resolve({ code:200 });
+      })
     }
   },
 
@@ -64,8 +67,11 @@ const routeArr = [
     exact: true,
     component: PostsDetail,
     head: Head,
-    loadData: () => {
+    loadData: ({ store, match }) => {
       console.log('帖子详情');
+      return new Promise(function (resolve, reject) {
+        resolve({ code:200 });
+      })
     }
   },
 
@@ -74,8 +80,11 @@ const routeArr = [
     exact: true,
     component: props => requireAuth(Topics, props),
     head: Head,
-    loadData: () => {
+    loadData: ({ store, match }) => {
       console.log('话题');
+      return new Promise(function (resolve, reject) {
+        resolve({ code:200 });
+      })
     }
   },
 
@@ -84,8 +93,11 @@ const routeArr = [
     exact: true,
     component: SignIn,
     head: Head,
-    loadData: () => {
+    loadData: ({ store, match }) => {
       console.log('登陆');
+      return new Promise(function (resolve, reject) {
+        resolve({ code:200 });
+      })
     }
   },
 
@@ -93,8 +105,11 @@ const routeArr = [
     path: '**',
     component: NotFound,
     head: Head,
-    loadData: () => {
+    loadData: ({ store, match }) => {
       console.log('页面不存在');
+      return new Promise(function (resolve, reject) {
+        resolve({ code:404 });
+      })
     }
   }
 ]

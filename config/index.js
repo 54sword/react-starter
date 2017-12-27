@@ -5,7 +5,7 @@ let config = {
   host: 'localhost',
   port: 4000,
   // 静态资源路径
-  assets_url: '//localhost:4000',
+  public_path: '//localhost:4000',
   class_scoped_name: '[hash:base64:3]',
 }
 

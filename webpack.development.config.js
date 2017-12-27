@@ -3,7 +3,7 @@ var HtmlwebpackPlugin = require('html-webpack-plugin')
 var path = require('path')
 var ExtractTextPlugin = require('extract-text-webpack-plugin')
 var CleanWebpackPlugin = require('clean-webpack-plugin')
-// var ServiceWorkerWebpackPlugin = require('serviceworker-webpack-plugin')
+var ServiceWorkerWebpackPlugin = require('serviceworker-webpack-plugin')
 
 var config = require('./config')
 
@@ -19,15 +19,15 @@ module.exports = {
   entry: {
     app: [
       './client/index',
-      // 'webpack-hot-middleware/client?path=/__webpack_hmr&timeout=20000&reload=true'
-      'webpack-hot-middleware/client?noInfo=true&reload=true'
+      'webpack-hot-middleware/client?path=/__webpack_hmr&timeout=20000&reload=true'
+      // 'webpack-hot-middleware/client?noInfo=true&reload=true'
     ]
   },
 
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: '[name].bundle.js',
-    publicPath: config.assets_url + "/"
+    publicPath: config.public_path + "/"
   },
 
   resolveLoader: {
@@ -167,9 +167,9 @@ module.exports = {
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NoEmitOnErrorsPlugin(),
 
-    // new ServiceWorkerWebpackPlugin({
-    //   entry: path.join(__dirname, 'client/sw.js'),
-    // })
+    new ServiceWorkerWebpackPlugin({
+      entry: path.join(__dirname, 'client/sw.js'),
+    })
 
   ]
 }

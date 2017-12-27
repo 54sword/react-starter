@@ -7,6 +7,8 @@ import { getAccessToken } from '../../reducers/account'
 
 import { withRouter } from 'react-router-dom'
 
+import Shell from '../shell'
+
 // 纯组件
 export class Home extends React.Component {
 
@@ -16,8 +18,12 @@ export class Home extends React.Component {
     }
   }
 
+  componentWillMount() {
+
+  }
+
   componentDidMount() {
-    // console.log(this);
+
   }
 
   render() {
@@ -53,4 +59,4 @@ const mapDispatchToProps = (dispatch) => {
 
 Home = withRouter(connect(mapStateToProps,mapDispatchToProps)(Home))
 
-export default Home
+export default Shell(Home)

@@ -18,7 +18,7 @@ export class NotFound extends React.Component {
 
   render() {
     return(<div>
-      打不开页面
+      404,无法找到该页面
     </div>)
   }
 

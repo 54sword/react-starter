@@ -8,8 +8,7 @@ var ServiceWorkerWebpackPlugin = require('serviceworker-webpack-plugin')
 var config = require('./config')
 
 const extractSass = new ExtractTextPlugin({
-    filename: "[name].[hash].css",
-    // disable: true
+    filename: "[name].[hash].css"
 })
 
 module.exports = {
@@ -23,7 +22,7 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: '[name].[hash].js',
-    publicPath: config.assets_url + "/"
+    publicPath: config.public_path + "/"
   },
 
   resolveLoader: {
@@ -91,10 +90,6 @@ module.exports = {
       name: 'common',
       filename: 'common.bundle.js'
     }),
-
-    // new ExtractTextPlugin('common.[hash].css', {
-    //   allChunks: true
-    // }),
 
     // 定义环境变量
     new webpack.DefinePlugin({

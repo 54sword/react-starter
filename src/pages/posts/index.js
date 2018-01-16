@@ -18,6 +18,12 @@ const Topic = ({ match }) => (
 )
 
 
+export default () => {
+  return (  <div>
+      <h3>22222</h3>
+    </div>)
+}
+
 // 纯组件
 export class Posts extends React.Component {
 
@@ -91,4 +97,4 @@ const mapDispatchToProps = (dispatch) => {
 
 Posts = connect(mapStateToProps,mapDispatchToProps)(Posts)
 
-export default Shell(Posts)
+// export default Shell(Posts)

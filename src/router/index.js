@@ -3,11 +3,14 @@ import ReactDOM from 'react-dom'
 import { Route, Switch, Redirect } from 'react-router-dom'
 import Promise from 'promise'
 
+import { generateAsyncRouteComponent, ensureReady } from '../pages/generateAsyncComponent.js';
+
+
 import '../pages/global.scss'
 
 // pages
 import Home from '../pages/home'
-import Posts from '../pages/posts'
+// import Posts from '../pages/posts'
 import PostsDetail from '../pages/posts-detail'
 import Topics from '../pages/topics'
 import SignIn from '../pages/sign-in'
@@ -52,7 +55,11 @@ const routeArr = [
   {
     path: '/posts',
     exact: true,
-    component: Posts,
+    // component: Posts,
+    component: generateAsyncRouteComponent({
+      loader: () => import('../pages/posts')
+    }),
+
     head: Head,
     loadData: ({ store, match }) => {
       console.log('帖子');
@@ -113,6 +120,8 @@ const routeArr = [
     }
   }
 ]
+
+
 
 
 let router = () => (

@@ -6,8 +6,6 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { update } from '../../actions/account'
 
-import Promise from 'promise'
-
 
 import Shell from '../shell'
 
@@ -21,14 +19,8 @@ export class Topics extends React.PureComponent {
     }
   }
 
-  componentDidMount() {
-    // this.props.update('qqq')
-    // console.log(this);
-  }
-
   render() {
     return(<div>
-
       <div>
         <h2>Topics</h2>
       </div>
@@ -36,25 +28,5 @@ export class Topics extends React.PureComponent {
   }
 
 }
-
-// Topics = CSSModules(Topics, styles)
-//
-// Topics.propTypes = {
-//   update: PropTypes.func.isRequired
-// }
-//
-// const mapStateToProps = (state, props) => {
-//   return {
-//   }
-// }
-//
-// const mapDispatchToProps = (dispatch) => {
-//   return {
-//     update: bindActionCreators(update, dispatch)
-//   }
-// }
-//
-// Topics = connect(mapStateToProps,mapDispatchToProps)(Topics)
-
 
 export default Shell(Topics)

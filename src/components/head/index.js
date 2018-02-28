@@ -12,8 +12,8 @@ export class Head extends React.Component {
 
   render() {
     return(<div styleName="head">
-      <ul>
-        <li><NavLink exact to="/">Home1333333</NavLink></li>
+      <ul styleName="test">
+        <li><NavLink exact to="/">Home</NavLink></li>
         <li><NavLink exact to="/posts">Posts</NavLink></li>
         <li><NavLink exact to="/topics">Topics</NavLink></li>
       </ul>

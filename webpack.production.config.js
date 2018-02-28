@@ -8,14 +8,22 @@ var ServiceWorkerWebpackPlugin = require('serviceworker-webpack-plugin')
 var config = require('./config')
 
 const extractSass = new ExtractTextPlugin({
-    filename: "[name].[hash].css"
+  filename: "[name].[hash].css",
+  allChunks: true,
+  // disable: true,
+  ignoreOrder: true
 })
 
 module.exports = {
 
+  // devtool: 'source-map',
+
   entry: {
     app: [
+      'babel-polyfill',
       './client/index'
+      // 'webpack-hot-middleware/client?path=/__webpack_hmr&timeout=20000&reload=true'
+      // 'webpack-hot-middleware/client?noInfo=true&reload=true'
     ]
   },
 
@@ -31,6 +39,7 @@ module.exports = {
 
   module: {
 
+
     rules: [
       {
         test: /\.js$/i,
@@ -38,8 +47,39 @@ module.exports = {
         loader: 'babel?presets[]=es2015,presets[]=react,presets[]=stage-0',
       },
 
+      /*
+      {
+        test: /\.scss$/i,
+        loader: ExtractTextPlugin.extract('style-loader',
+          `css-loader?modules&localIdentName=${config.class_scoped_name}!sass-loader`),
+        include: path.resolve(__dirname, 'src')
+      }
+      */
+
       {
         test: /\.scss$/,
+        use: ExtractTextPlugin.extract({
+            use: [{
+                loader: `css`,
+                options: {
+                  // css module
+                  modules: true,
+                  localIdentName: config.class_scoped_name,
+                  // If you are having trouble with urls not resolving add this setting.
+                  // See https://github.com/webpack-contrib/css-loader#url
+                  // url: false,
+                  // 压缩css
+                  minimize: true,
+                  // sourceMap: true
+                }
+            }, {
+                loader: "sass"
+            }],
+            // use style-loader in development
+            fallback: "style"
+        })
+
+        /*
         use: extractSass.extract({
             use: [{
                 loader: `css-loader?modules&localIdentName=${config.class_scoped_name}`
@@ -49,8 +89,34 @@ module.exports = {
             // use style-loader in development
             fallback: "style-loader"
         })
-      }
+        */
 
+      },
+
+      // 支持解析css
+      {
+        test: /\.css$/,
+        use: extractSass.extract({
+            use: [{
+              loader: `css`
+            }],
+            // use style-loader in development
+            // fallback: "style-loader"
+        })
+      },
+
+      /*
+      {
+        test: /\.scss$/i,
+        loader: ExtractTextPlugin.extract('style',
+          `css?modules&importLoaders=1&localIdentName=${config.class_scoped_name}!resolve-url!sass`),
+        include: path.resolve(__dirname, 'src')
+      },
+      {
+        test: /\.css$/,
+        loader: ExtractTextPlugin.extract('style', 'css')
+      }
+      */
     ]
 
 
@@ -75,6 +141,17 @@ module.exports = {
     */
   },
 
+  optimization: {
+    splitChunks:{
+        name: 'common'
+        // filename: 'common.bundle.js'
+    },
+    minimize: true
+    // runtimeChunk: {
+    //
+    // }
+  },
+
   plugins: [
 
     // 清空打包目录
@@ -84,34 +161,30 @@ module.exports = {
       dry: false
     }),
 
-    extractSass,
-
-    new webpack.optimize.CommonsChunkPlugin({
-      name: 'common',
-      filename: 'common.bundle.js'
-    }),
 
     // 定义环境变量
     new webpack.DefinePlugin({
       // 是否是生产环境
-      'process.env': {
-        NODE_ENV: JSON.stringify(process.env.NODE_ENV),
-      },
+      // 'process.env': {
+      //   NODE_ENV: JSON.stringify(process.env.NODE_ENV),
+      // },
       // 是否是 Node
       '__NODE__': JSON.stringify(process.env.__NODE__),
       // 是否是开发环境
       '__DEV__': JSON.stringify(process.env.NODE_ENV == 'development')
     }),
 
-    new webpack.optimize.UglifyJsPlugin({
-      output: {
-        comments: false,
-      },
-      minimize: true,
-      compress: {
-        warnings: false
-      }
-    }),
+    // new ExtractTextPlugin({
+    //   filename: "[name].[hash].css"
+    // }),
+
+    extractSass,
+
+    // new webpack.optimize.CommonsChunkPlugin({
+    //   name: 'common',
+    //   filename: 'common.bundle.js'
+    // }),
+
 
     new HtmlwebpackPlugin({
       filename: path.resolve(__dirname, 'dist/index.ejs'),
@@ -122,14 +195,15 @@ module.exports = {
       htmlDom: '<%- html %>',
       reduxState: '<%- reduxState %>'
     }),
-
+    //
     // new webpack.optimize.OccurrenceOrderPlugin(),
-    new webpack.HotModuleReplacementPlugin(),
-    new webpack.NoEmitOnErrorsPlugin(),
-
-    new ServiceWorkerWebpackPlugin({
-      entry: path.join(__dirname, 'client/sw.js'),
-    })
+    // new webpack.NamedModulesPlugin(),
+    // new webpack.HotModuleReplacementPlugin(),
+    // new webpack.NoEmitOnErrorsPlugin(),
+    //
+    // new ServiceWorkerWebpackPlugin({
+    //   entry: path.join(__dirname, 'client/sw.js'),
+    // })
 
   ]
 }

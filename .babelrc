@@ -1,4 +1,16 @@
 {
-  "presets": ["react", "es2015"],
-  "plugins": ["dynamic-import-node","dynamic-import-webpack"]
+  "presets": ["react", "es2015", "stage-2"],
+  "env": {
+    "server": {
+      "plugins": [
+        "syntax-dynamic-import",
+        "dynamic-import-node"
+      ]
+    },
+    "client": {
+      "plugins": [
+        "dynamic-import-webpack"
+      ]
+    }
+  }
 }

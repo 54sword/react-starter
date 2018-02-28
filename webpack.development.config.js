@@ -14,11 +14,12 @@ const extractSass = new ExtractTextPlugin({
 
 module.exports = {
 
-  devtool: 'source-map',
+  // devtool: 'source-map',
 
   entry: {
     app: [
-      './client/index',
+      'babel-polyfill',
+      './src/client/index',
       'webpack-hot-middleware/client?path=/__webpack_hmr&timeout=20000&reload=true'
       // 'webpack-hot-middleware/client?noInfo=true&reload=true'
     ]
@@ -54,46 +55,29 @@ module.exports = {
 
       {
         test: /\.scss$/,
-
-        /*
         use: extractSass.extract({
-            use: [{
-                loader: "css-loader"
+            use: [
+              {
+                loader: `css`,
+                options: {
+                  // css module
+                  modules: true,
+                  localIdentName: config.class_scoped_name,
+                  // If you are having trouble with urls not resolving add this setting.
+                  // See https://github.com/webpack-contrib/css-loader#url
+                  // url: false,
+                  // 压缩css
+                  // importLoaders: 1,
+                  minimize: true,
+                  // sourceMap: true
+                }
             }, {
-                loader: "sass-loader"
+                loader: `sass`,
             }],
             // use style-loader in development
-            fallback: "style-loader"
+            fallback: "style"
         })
-        */
-
-
-        use: extractSass.extract({
-            use: [{
-                loader: `css-loader?modules&localIdentName=${config.class_scoped_name}`
-            }, {
-                loader: "sass-loader"
-            }],
-            // use style-loader in development
-            fallback: "style-loader"
-        })
-
-        /*
-        use: [{
-            loader: "style-loader" // creates style nodes from JS strings
-        }, {
-            loader: `css-loader?modules&localIdentName=${config.class_scoped_name}`
-        }, {
-            loader: "sass-loader", // compiles Sass to CSS
-            options: {
-              includePaths: ["src"]
-            }
-        }]
-        */
-
-
-
-      }
+      },
 
       /*
       {
@@ -130,27 +114,43 @@ module.exports = {
     ]
     */
   },
+  //
+  // optimization: {
+  //   splitChunks:{
+  //       name: 'common'
+  //       // filename: 'common.bundle.js'
+  //   },
+  //   minimize: true
+  //   // runtimeChunk: {
+  //   //
+  //   // }
+  // },
+
 
   plugins: [
 
     // 定义环境变量
     new webpack.DefinePlugin({
       // 是否是生产环境
-      'process.env': {
-        NODE_ENV: JSON.stringify(process.env.NODE_ENV),
-      },
+      // 'process.env': {
+      //   NODE_ENV: JSON.stringify(process.env.NODE_ENV),
+      // },
       // 是否是 Node
       '__NODE__': JSON.stringify(process.env.__NODE__),
       // 是否是开发环境
       '__DEV__': JSON.stringify(process.env.NODE_ENV == 'development')
     }),
 
+    // new ExtractTextPlugin('common.css', {
+    //   // allChunks: true,
+    // }),
+
     extractSass,
 
-    new webpack.optimize.CommonsChunkPlugin({
-      name: 'common',
-      filename: 'common.bundle.js'
-    }),
+    // new webpack.optimize.CommonsChunkPlugin({
+    //   name: 'common',
+    //   filename: 'common.bundle.js'
+    // }),
 
     new HtmlwebpackPlugin({
       filename: path.resolve(__dirname, 'dist/index.ejs'),
@@ -161,15 +161,15 @@ module.exports = {
       htmlDom: '<%- html %>',
       reduxState: '<%- reduxState %>'
     }),
-
-    new webpack.optimize.OccurrenceOrderPlugin(),
-    new webpack.NamedModulesPlugin(),
+    //
+    // new webpack.optimize.OccurrenceOrderPlugin(),
+    // new webpack.NamedModulesPlugin(),
     new webpack.HotModuleReplacementPlugin(),
-    new webpack.NoEmitOnErrorsPlugin(),
-
-    new ServiceWorkerWebpackPlugin({
-      entry: path.join(__dirname, 'client/sw.js'),
-    })
+    // new webpack.NoEmitOnErrorsPlugin(),
+    //
+    // new ServiceWorkerWebpackPlugin({
+    //   entry: path.join(__dirname, 'client/sw.js'),
+    // })
 
   ]
 }

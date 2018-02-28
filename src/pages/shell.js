@@ -12,6 +12,10 @@ const Shell = (Component) => {
 
   class Shell extends React.Component {
 
+    static defaultProps = {
+      loadData: Component.loadData || null
+    }
+
     constructor(props) {
       super(props)
     }
@@ -20,7 +24,7 @@ const Shell = (Component) => {
     componentWillMount() {
 
       // console.log(this.props.staticContext);
-      
+
       const { search } = this.props.location
       this.props.location.params = search ? parseUrl(search) : null
       // console.log('进入组件')

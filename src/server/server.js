@@ -9,39 +9,14 @@ import { StaticRouter, matchPath } from 'react-router'
 // import { matchPath } from 'react-router-dom'
 import { Provider } from 'react-redux'
 
-import configureStore from '../src/store'
+import configureStore from '../store'
 // 路由组件
-import { RouteArr, Router } from '../src/router'
-
+import createRouter from '../router'
 
 // 配置
-import config from '../config'
+import config from '../../config'
 
 const app = express()
-
-
-// https
-
-/*
-var fs = require('fs');
-var http = require('http');
-var https = require('https');
-var privateKey  = fs.readFileSync('./https/private.pem', 'utf8');
-var certificate = fs.readFileSync('./https/file.crt', 'utf8');
-var credentials = {key: privateKey, cert: certificate};
-var httpServer = http.createServer(app);
-var httpsServer = https.createServer(credentials, app);
-
-var PORT = 18080;
-var SSLPORT = config.port;
-
-httpServer.listen(PORT, function() {
-    console.log('HTTP Server is running on: http://localhost:%s', PORT);
-});
-httpsServer.listen(SSLPORT, function() {
-    console.log('HTTPS Server is running on: https://localhost:%s', SSLPORT);
-});
-*/
 
 
 // webpack热更新
@@ -49,7 +24,7 @@ const runWebpack = ()=>{
 
   // https://github.com/glenjamin/webpack-hot-middleware/blob/master/example/server.js
   const webpack = require('webpack')
-  const webpackConfig = require('../webpack.development.config.js')
+  const webpackConfig = require('../../webpack.development.config.js')
   const compiler = webpack(webpackConfig)
 
   app.use(require("webpack-dev-middleware")(compiler, {
@@ -64,41 +39,24 @@ const runWebpack = ()=>{
 if (process.env.NODE_ENV === 'development') runWebpack()
 
 
+
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(compress())
 app.use(express.static(__dirname + '/../dist'))
 
 
-app.use(function (req, res, next) {
-  // 计算页面加载完成花费的时间
-  var exec_start_at = Date.now()
-  var _send = res.render
-  res.render = function () {
-    if (process.env.NODE_ENV === 'development') {
-      console.log(req.url + ' ' + String(Date.now() - exec_start_at) + ' ms')
-    } else {
-      // 发送Header
-      res.set('X-Execution-Time', String(Date.now() - exec_start_at) + ' ms')
-    }
-    // 调用原始处理函数
-    return _send.apply(res, arguments)
-  }
-  next()
-})
-
 app.get('*', async function(req, res){
 
-  const store = configureStore({})
+  const store = configureStore({});
 
-  // const context = {
-  //   'test': 'test'
-  // }
+  const router = createRouter(null);
+
 
   let _route = null,
-      _match = null
+      _match = null;
 
-  RouteArr.some(route => {
+  router.list.some(route => {
     let match = matchPath(req.url.split('?')[0], route)
     if (match && match.path) {
       _route = route
@@ -106,6 +64,17 @@ app.get('*', async function(req, res){
       return true
     }
   })
+
+  let context = {}
+
+  // 加载页面分片
+  context = await _route.component.load({ store, match: _match, userinfo: null })
+  .catch((e)=>{
+    console.log(e);
+    console.log('发生错误');
+  })
+
+  console.log(context);
 
   // if (!_route || !_match) {
   //   let reduxState = JSON.stringify(store.getState())
@@ -118,16 +87,26 @@ app.get('*', async function(req, res){
   // let result = null
 
   // if (_route && _match && _route.loadData) {
-  let context = await _route.loadData({ store, match: _match })
+  // let context = await _route.loadData({ store, match: _match })
   // }
+
+
+  // 获取路由dom
+  const _Router = router.dom
+
+  // let RouterDom = Router();
+
 
   let html = ReactDOMServer.renderToString(
     <Provider store={store}>
       <StaticRouter location={req.url} context={context}>
-        <Router />
+        <_Router />
       </StaticRouter>
     </Provider>
   )
+
+
+  // console.log(html);
 
   // console.log(html);
 
@@ -139,16 +118,14 @@ app.get('*', async function(req, res){
   //   })
   //   res.end()
   // } else {
+
+  // if (context && context.code && context.code != 200) {
   //
-
-  // if (process.env.NODE_ENV === 'development') {
-  //   html = ''
   // }
 
-    res.status(context.code)
-    res.render('../dist/index.ejs', { html, reduxState })
-    res.end()
-  // }
+  // res.status(context.code)
+  res.render('../dist/index.ejs', { html, reduxState })
+  res.end()
 })
 
 app.listen(config.port);

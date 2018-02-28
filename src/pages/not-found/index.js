@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 
-import CSSModules from 'react-css-modules'
+// import CSSModules from 'react-css-modules'
 import styles from './style.scss'
 
 // 纯组件
@@ -24,7 +24,7 @@ export class NotFound extends React.Component {
 
 }
 
-NotFound = CSSModules(NotFound, styles)
+// NotFound = CSSModules(NotFound, styles)
 
 NotFound.propTypes = {
 }

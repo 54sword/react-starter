@@ -1,156 +1,134 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import { Route, Switch, Redirect } from 'react-router-dom'
-import Promise from 'promise'
 
-import { generateAsyncRouteComponent, ensureReady } from '../pages/generateAsyncComponent.js';
+import { generateAsyncRouteComponent } from '../pages/generateAsyncComponent.js';
 
 
 import '../pages/global.scss'
 
-// pages
-import Home from '../pages/home'
-// import Posts from '../pages/posts'
-import PostsDetail from '../pages/posts-detail'
-import Topics from '../pages/topics'
-import SignIn from '../pages/sign-in'
-import NotFound from '../pages/not-found'
-
 // components
 import Head from '../components/head'
 
-// actions
-import { update } from '../actions/account'
+/**
+ * 创建路由
+ * @param  {Object} userinfo 用户信息，以此判断用户是否是登录状态，并控制页面访问权限
+ * @return {[type]}
+ */
 
-// 登录验证
-function requireAuth(Layout, props) {
+export default (userinfo) => {
 
-  // console.log(props);
+  // 登录用户才能访问
+  const requireAuth = (Layout, props) => {
+    if (!userinfo) return (<Redirect to="/sign-in" />);
+    return (<Layout {...props} />);
+  }
 
-  if (true) { // 未登录
-    return <Redirect to="/sign-in" />;
-  } else {
+  // 游客才能访问
+  const requireTourists = (Layout, props) => {
+    if (signIn) {
+      return <Redirect to="/" />
+    } else {
+      return <Layout {...props} />
+    }
+  }
+
+  // 大家都可以访问
+  const triggerEnter = (Layout, props) => {
     return <Layout {...props} />
   }
-}
 
-const routeArr = [
-  {
-    path: '/',
-    exact: true,
-    component: Home,
-    head: Head,
-    loadData: ({ store, match }) => {
-      console.log('首页');
+  // 路由数组
+  const routeArr = [
 
-      return new Promise(function (resolve, reject) {
-        // setTimeout(function () {
-          store.dispatch(update('777'))
-          resolve({ code:200, resr: '123' });
-        // }, 3000);
-      })
+    {
+      path: '/',
+      exact: true,
+      head: Head,
+      component: generateAsyncRouteComponent({
+        loader: () => import('../pages/home')
+      }),
+      enter: triggerEnter
+    },
 
+    {
+      path: '/posts',
+      exact: true,
+      head: Head,
+      component: generateAsyncRouteComponent({
+        loader: () => import('../pages/posts')
+      }),
+      enter: triggerEnter
+    },
+
+    {
+      path: '/posts/:id',
+      exact: true,
+      head: Head,
+      component: generateAsyncRouteComponent({
+        loader: () => import('../pages/posts-detail')
+      }),
+      enter: triggerEnter
+    },
+
+    {
+      path: '/topics',
+      exact: true,
+      head: Head,
+      component: generateAsyncRouteComponent({
+        loader: () => import('../pages/topics')
+      }),
+      enter: triggerEnter
+    },
+
+    {
+      path: '/sign-in',
+      exact: true,
+      head: Head,
+      component: generateAsyncRouteComponent({
+        loader: () => import('../pages/sign-in')
+      }),
+      enter: triggerEnter
+    },
+
+    {
+      path: '**',
+      head: Head,
+      component: generateAsyncRouteComponent({
+        loader: () => import('../pages/not-found')
+      }),
+      enter: triggerEnter
     }
-  },
-  {
-    path: '/posts',
-    exact: true,
-    // component: Posts,
-    component: generateAsyncRouteComponent({
-      loader: () => import('../pages/posts')
-    }),
+  ]
 
-    head: Head,
-    loadData: ({ store, match }) => {
-      console.log('帖子');
-      return new Promise(function (resolve, reject) {
-        resolve({ code:200 });
-      })
-    }
-  },
+  let router = () => (<div>
 
-  {
-    path: '/posts/:id',
-    exact: true,
-    component: PostsDetail,
-    head: Head,
-    loadData: ({ store, match }) => {
-      console.log('帖子详情');
-      return new Promise(function (resolve, reject) {
-        resolve({ code:200 });
-      })
-    }
-  },
+      <Switch>
+        {routeArr.map((route, index) => (
+          <Route
+            key={index}
+            path={route.path}
+            exact={route.exact}
+            component={route.head}
+            />
+        ))}
+      </Switch>
 
-  {
-    path: '/topics',
-    exact: true,
-    component: props => requireAuth(Topics, props),
-    head: Head,
-    loadData: ({ store, match }) => {
-      console.log('话题');
-      return new Promise(function (resolve, reject) {
-        resolve({ code:200 });
-      })
-    }
-  },
+      <Switch>
+        {routeArr.map((route, index) => (
+          <Route
+            key={index}
+            path={route.path}
+            exact={route.exact}
+            component={props => route.enter(route.component, props)}
+            />
+        ))}
+      </Switch>
 
-  {
-    path: '/sign-in',
-    exact: true,
-    component: SignIn,
-    head: Head,
-    loadData: ({ store, match }) => {
-      console.log('登陆');
-      return new Promise(function (resolve, reject) {
-        resolve({ code:200 });
-      })
-    }
-  },
+      </div>)
 
-  {
-    path: '**',
-    component: NotFound,
-    head: Head,
-    loadData: ({ store, match }) => {
-      console.log('页面不存在');
-      return new Promise(function (resolve, reject) {
-        resolve({ code:404 });
-      })
-    }
+  return {
+    list: routeArr,
+    dom: router
   }
-]
-
-
-
-
-let router = () => (
-  <div>
-
-    <Switch>
-      {routeArr.map((route, index) => (
-        <Route
-          key={index}
-          path={route.path}
-          exact={route.exact}
-          component={route.head}
-          />
-      ))}
-    </Switch>
-
-    <Switch>
-      {routeArr.map((route, index) => (
-        <Route
-          key={index}
-          path={route.path}
-          exact={route.exact}
-          component={route.component}
-          />
-      ))}
-    </Switch>
-
-  </div>
-)
-
-export const RouteArr = routeArr
-export const Router = router
+}

@@ -12,6 +12,14 @@ import Shell from '../shell'
 // 纯组件
 export class Home extends React.Component {
 
+  // 服务端渲染
+  static loadData({ store, match, userinfo }) {
+    const { id } = match.params
+    return new Promise(async function (resolve, reject) {
+      resolve({ code:200 });
+    })
+  }
+
   constructor(props) {
     super(props)
     this.state = {
@@ -32,10 +40,7 @@ export class Home extends React.Component {
 
     return(<div>
       <div>
-        <div>当前注册用户：{accessToken}</div>
-        <div>帖子总数1：</div>
-        <div>评论总数2：</div>
-        <div>恢复总数2：</div>
+        <div>首页</div>
       </div>
     </div>)
   }

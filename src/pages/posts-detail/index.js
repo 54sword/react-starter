@@ -6,7 +6,7 @@ import { connect } from 'react-redux'
 import { update } from '../../actions/account'
 // import { getAccessToken } from '../../reducers/account'
 
-import CSSModules from 'react-css-modules'
+// import CSSModules from 'react-css-modules'
 import styles from './style.scss'
 
 
@@ -63,7 +63,7 @@ export class PostsDetail extends React.Component {
 
 }
 
-PostsDetail = CSSModules(PostsDetail, styles)
+// PostsDetail = CSSModules(PostsDetail, styles)
 
 PostsDetail.propTypes = {
   update: PropTypes.func.isRequired

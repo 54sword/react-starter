@@ -6,7 +6,7 @@ let config = {
   port: 4000,
   // 静态资源路径
   public_path: '//localhost:4000',
-  class_scoped_name: '[hash:base64:3]',
+  class_scoped_name: '[hash:base64:8]',
 }
 
 // 开发环境配置

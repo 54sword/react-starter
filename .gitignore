@@ -27,3 +27,4 @@ node_modules
 https
 dist
 *.DS_Store
+package-lock.json

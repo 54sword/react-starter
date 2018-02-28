@@ -1,5 +1,5 @@
 import React from 'react';
-import { matchRoutes } from 'react-router-config';
+// import { matchRoutes } from 'react-router-config';
 
 /**
  * Returns a new React component, ready to be instantiated.
@@ -8,8 +8,6 @@ import { matchRoutes } from 'react-router-config';
  */
 exports.generateAsyncRouteComponent = ({ loader, Placeholder }) => {
 
-  console.log(loader);
-
   let Component = null;
   return class AsyncRouteComponent extends React.Component {
     /**
@@ -17,25 +15,47 @@ exports.generateAsyncRouteComponent = ({ loader, Placeholder }) => {
      * this component. This should only be called one time outside of the
      * normal render path.
      */
-    static load() {
-      return loader().then((ResolvedComponent) => {
+    static load({ store, match, userinfo }) {
 
-        console.log(ResolvedComponent);
-        Component = ResolvedComponent.default || ResolvedComponent;
-      });
+      return new Promise((resolve, reject) => {
+
+        loader().then(async (ResolvedComponent) => {
+
+          let result = {}
+
+          if (store && match) {
+
+            // 分片页面，存在loadData(服务端加载数据)，那么则先执行
+            if (
+              ResolvedComponent &&
+              ResolvedComponent.default &&
+              ResolvedComponent.default.WrappedComponent &&
+              ResolvedComponent.default.WrappedComponent.defaultProps &&
+              ResolvedComponent.default.WrappedComponent.defaultProps.loadData
+            ) {
+              result = await ResolvedComponent.default.WrappedComponent.defaultProps.loadData({ store, match, userinfo })
+              // context = await _route.component.WrappedComponent.defaultProps.loadData({ store, match: _match, userinfo })
+            }
+
+          }
+
+          Component = ResolvedComponent.default || ResolvedComponent;
+
+          resolve(result)
+        }).catch(reject)
+
+      })
     }
 
     constructor() {
       super();
       this.updateState = this.updateState.bind(this);
-      this.state = {
-        Component,
-      };
+      this.state = { Component }
     }
-
-    componentWillMount() {
-      console.log('123123123');
-      AsyncRouteComponent.load().then(this.updateState);
+    
+    componentDidMount() {
+      AsyncRouteComponent.load({})
+      .then(this.updateState);
     }
 
     updateState() {
@@ -62,44 +82,3 @@ exports.generateAsyncRouteComponent = ({ loader, Placeholder }) => {
     }
   };
 }
-
-/**
- * First match the routes via react-router-config's `matchRoutes` function.
- * Then iterate over all of the matched routes, if they've got a load function
- * call it.
- *
- * This helps us to make sure all the async code is loaded before rendering.
- */
-exports.ensureReady = (routeConfig, providedLocation) => {
-  const matches = matchRoutes(routeConfig, providedLocation || location.pathname);
-  return Promise.all(matches.map((match) => {
-    const { component } = match.route;
-    if (component && component.load) {
-      return component.load();
-    }
-    return undefined;
-  }));
-}
-
-/*
-export function convertCustomRouteConfig(customRouteConfig, parentRoute) {
-  return customRouteConfig.map((route) => {
-    if (typeof route.path === 'function') {
-      const pathResult = route.path(parentRoute || '').replace('//', '/');
-      return {
-        path: pathResult,
-        component: route.component,
-        exact: route.exact,
-        routes: route.routes ? convertCustomRouteConfig(route.routes, pathResult) : [],
-      };
-    }
-    const pathResult = `${parentRoute}${route.path}`;
-    return {
-      path: pathResult,
-      component: route.component,
-      exact: route.exact,
-      routes: route.routes ? convertCustomRouteConfig(route.routes, pathResult) : [],
-    };
-  });
-}
-*/

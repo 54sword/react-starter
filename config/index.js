@@ -1,12 +1,24 @@
 
 // 生产环境配置
 let config = {
+  // 正式环境
   debug: false,
-  host: 'localhost',
+
+  // 域名
+  host: 'location',
+
+  //  服务端口
   port: 4000,
-  // 静态资源路径
-  public_path: '//localhost:4000',
+
+  // 登录token，cookie 的名称
+  auth_cookie_name: 'signin-cookie',
+
+  // https://github.com/css-modules/css-modules
   class_scoped_name: '[hash:base64:8]',
+
+  // 前端打包后，静态资源路径前缀
+  // 生成效果如：//localhost:4000/app.bundle.js
+  public_path: '//localhost:4000',
 }
 
 // 开发环境配置

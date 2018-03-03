@@ -1,101 +1,90 @@
-import express from 'express'
-import bodyParser from 'body-parser'
-import compress from 'compression'
+
+import path from 'path';
+import express from 'express';
+import bodyParser from 'body-parser';
+import cookieParser from 'cookie-parser';
+import compress from 'compression';
+import DocumentMeta from 'react-document-meta';
 
 // 服务端渲染依赖
-import React from 'react'
-import ReactDOMServer from 'react-dom/server'
-import { StaticRouter, matchPath } from 'react-router'
-// import { matchPath } from 'react-router-dom'
-import { Provider } from 'react-redux'
+import React from 'react';
+import ReactDOMServer from 'react-dom/server';
+import { StaticRouter, matchPath } from 'react-router';
+import { Provider } from 'react-redux';
 
-import configureStore from '../store'
+// 路由配置
+import configureStore from '../store';
 // 路由组件
-import createRouter from '../router'
+import createRouter from '../router';
+// 路由初始化的redux内容
+import { initialStateJSON } from '../reducers';
+import { saveAccessToken, saveUserInfo } from '../actions/user';
 
 // 配置
-import config from '../../config'
+import { port, auth_cookie_name } from '../../config';
+import sign from './sign';
+import webpackHotMiddleware from './webpack-hot-middleware';
 
-const app = express()
+const app = express();
 
 
-// webpack热更新
-const runWebpack = ()=>{
+// ***** 注意 *****
+// 不要改变如下代码执行位置，否则热更新会失效
+// 开发环境开启修改代码后热更新
+if (process.env.NODE_ENV === 'development') webpackHotMiddleware(app);
 
-  // https://github.com/glenjamin/webpack-hot-middleware/blob/master/example/server.js
-  const webpack = require('webpack')
-  const webpackConfig = require('../../webpack.development.config.js')
-  const compiler = webpack(webpackConfig)
 
-  app.use(require("webpack-dev-middleware")(compiler, {
-    noInfo: true, publicPath: webpackConfig.output.publicPath
-  }))
-
-  app.use(require("webpack-hot-middleware")(compiler, {
-    log: console.log, path: '/__webpack_hmr', heartbeat: 10 * 1000
-  }))
-}
-
-if (process.env.NODE_ENV === 'development') runWebpack()
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cookieParser());
+app.use(compress());
+app.use(express.static(__dirname + '/../../dist'));
 
 
 
-app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({ extended: true }))
-app.use(compress())
-app.use(express.static(__dirname + '/../dist'))
+// 登录、退出
+app.use('/sign', sign());
 
+app.get('*', async (req, res) => {
 
-app.get('*', async function(req, res){
+  const store = configureStore(JSON.parse(initialStateJSON));
 
-  const store = configureStore({});
+  let user = null;
+  let accessToken = req.cookies[auth_cookie_name] || '';
 
-  const router = createRouter(null);
+  // 验证 token 是否有效
+  if (accessToken) {
+    // 这里可以去查询 accessToken 是否有效
+    // your code
+    // 这里假设如果有 accessToken ，那么就是登录用户，将他保存到redux中
+    user = { id: '001', nickname: accessToken };
+    // 储存用户信息
+    store.dispatch(saveUserInfo({ userinfo: user }));
+    // 储存access token
+    store.dispatch(saveAccessToken({ accessToken }));
+  }
 
+  const router = createRouter(user);
 
   let _route = null,
       _match = null;
 
   router.list.some(route => {
-    let match = matchPath(req.url.split('?')[0], route)
+    let match = matchPath(req.url.split('?')[0], route);
     if (match && match.path) {
-      _route = route
-      _match = match
-      return true
+      _route = route;
+      _match = match;
+      return true;
     }
   })
 
-  let context = {}
+  let context = {};
 
   // 加载页面分片
-  context = await _route.component.load({ store, match: _match, userinfo: null })
-  .catch((e)=>{
-    console.log(e);
-    console.log('发生错误');
-  })
-
-  console.log(context);
-
-  // if (!_route || !_match) {
-  //   let reduxState = JSON.stringify(store.getState())
-  //   res.status(404)
-  //   res.render('../dist/index.ejs', { html: '', reduxState })
-  //   res.end()
-  //   return
-  // }
-
-  // let result = null
-
-  // if (_route && _match && _route.loadData) {
-  // let context = await _route.loadData({ store, match: _match })
-  // }
-
+  context = await _route.component.load({ store, match: _match });
 
   // 获取路由dom
-  const _Router = router.dom
-
-  // let RouterDom = Router();
-
+  const _Router = router.dom;
 
   let html = ReactDOMServer.renderToString(
     <Provider store={store}>
@@ -103,30 +92,25 @@ app.get('*', async function(req, res){
         <_Router />
       </StaticRouter>
     </Provider>
-  )
-
-
-  // console.log(html);
-
-  // console.log(html);
+  );
 
   let reduxState = JSON.stringify(store.getState()).replace(/</g, '\\x3c');
 
-  // if (context.url) {
-  //   res.writeHead(301, {
-  //     Location: context.url
-  //   })
-  //   res.end()
-  // } else {
+  // 获取页面的meta，嵌套到模版中
+  let meta = DocumentMeta.renderAsHTML();
 
-  // if (context && context.code && context.code != 200) {
-  //
-  // }
+  if (context.code == 301) {
+    res.writeHead(301, {
+      Location: context.url
+    });
+  } else {
+    res.status(context.code);
+    res.render('../dist/index.ejs', { html, reduxState, meta });
+  }
 
-  // res.status(context.code)
-  res.render('../dist/index.ejs', { html, reduxState })
-  res.end()
-})
+  res.end();
 
-app.listen(config.port);
-console.log('server started on port ' + config.port)
+});
+
+app.listen(port);
+console.log('server started on port ' + port);

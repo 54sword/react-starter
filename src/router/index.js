@@ -1,32 +1,31 @@
-import React from 'react'
-import ReactDOM from 'react-dom'
-import { Route, Switch, Redirect } from 'react-router-dom'
+import React from 'react';
+import ReactDOM from 'react-dom';
+import { Route, Switch, Redirect } from 'react-router-dom';
 
-import { generateAsyncRouteComponent } from '../pages/generateAsyncComponent.js';
+// 生成异步加载组件
+import { generateAsyncRouteComponent } from '../components/generateAsyncComponent.js';
 
-
-import '../pages/global.scss'
-
-// components
-import Head from '../components/head'
+import Head from '../components/head';
 
 /**
  * 创建路由
  * @param  {Object} userinfo 用户信息，以此判断用户是否是登录状态，并控制页面访问权限
  * @return {[type]}
  */
-
-export default (userinfo) => {
+export default (user) => {
 
   // 登录用户才能访问
   const requireAuth = (Layout, props) => {
-    if (!userinfo) return (<Redirect to="/sign-in" />);
-    return (<Layout {...props} />);
+    if (!user) {
+      return <Redirect to="/sign-in" />
+    } else {
+      return <Layout {...props} />
+    }
   }
 
   // 游客才能访问
   const requireTourists = (Layout, props) => {
-    if (signIn) {
+    if (user) {
       return <Redirect to="/" />
     } else {
       return <Layout {...props} />
@@ -48,17 +47,7 @@ export default (userinfo) => {
       component: generateAsyncRouteComponent({
         loader: () => import('../pages/home')
       }),
-      enter: triggerEnter
-    },
-
-    {
-      path: '/posts',
-      exact: true,
-      head: Head,
-      component: generateAsyncRouteComponent({
-        loader: () => import('../pages/posts')
-      }),
-      enter: triggerEnter
+      enter: requireAuth
     },
 
     {
@@ -68,7 +57,7 @@ export default (userinfo) => {
       component: generateAsyncRouteComponent({
         loader: () => import('../pages/posts-detail')
       }),
-      enter: triggerEnter
+      enter: requireAuth
     },
 
     {
@@ -78,17 +67,17 @@ export default (userinfo) => {
       component: generateAsyncRouteComponent({
         loader: () => import('../pages/topics')
       }),
-      enter: triggerEnter
+      enter: requireAuth
     },
 
     {
       path: '/sign-in',
       exact: true,
-      head: Head,
+      // head: Head,
       component: generateAsyncRouteComponent({
         loader: () => import('../pages/sign-in')
       }),
-      enter: triggerEnter
+      enter: requireTourists
     },
 
     {
@@ -110,19 +99,21 @@ export default (userinfo) => {
             path={route.path}
             exact={route.exact}
             component={route.head}
-            />
-        ))}
+            />)
+        )}
       </Switch>
 
       <Switch>
-        {routeArr.map((route, index) => (
-          <Route
-            key={index}
-            path={route.path}
-            exact={route.exact}
-            component={props => route.enter(route.component, props)}
-            />
-        ))}
+        {routeArr.map((route, index) => {
+          if (route.component) {
+            return (<Route
+              key={index}
+              path={route.path}
+              exact={route.exact}
+              component={props => route.enter(route.component, props)}
+              />)
+          }
+        })}
       </Switch>
 
       </div>)

@@ -1,85 +1,107 @@
-import React from 'react'
-import { Route, Link } from 'react-router-dom'
-import PropTypes from 'prop-types'
-import { bindActionCreators } from 'redux'
-import { connect } from 'react-redux'
-import { update } from '../../actions/account'
-// import { getAccessToken } from '../../reducers/account'
+import React from 'react';
+import PropTypes from 'prop-types';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import { loadPostsList } from '../../actions/posts';
+import { getPostsListByListId } from '../../reducers/posts';
 
-// import CSSModules from 'react-css-modules'
-import styles from './style.scss'
+import Shell from '../../components/shell';
+import Meta from '../../components/meta';
 
-
-// 纯组件
 export class PostsDetail extends React.Component {
 
+  // 服务端渲染
+  // 加载需要在服务端渲染的数据
+  static loadData({ store, match, userinfo }) {
+    return new Promise(async function (resolve, reject) {
+
+      const { id } = match.params;
+
+      const [ err, data ] = await loadPostsList({
+        id: id,
+        filter: {
+          _id: id,
+          deleted: false,
+          weaken: false
+        }
+      })(store.dispatch, store.getState);
+
+      // 没有找到帖子，设置页面 http code 为404
+      if (err || data.length == 0) {
+        resolve({ code:404 });
+      } else {
+        resolve({ code:200 });
+      }
+
+    })
+  }
+
   constructor(props) {
-    super(props)
-    this.state = {
-    }
+    super(props);
   }
 
   componentDidMount() {
-    // this.props.update('ttt')
+
+    const { id } = this.props.match.params;
+    const { list, loadPostsList } = this.props;
+
+    if (!list || !list.data) {
+      this.props.loadPostsList({
+        id,
+        filter: {
+          _id: id
+        }
+      })
+    }
+
   }
 
   render() {
+
+    const { list } = this.props;
+    const { loading, data } = list || {};
+    const posts = data && data[0] ? data[0] : null;
+
+    // 404 处理
+    if (data && data.length == 0) {
+      return '404 Not Found';
+    }
+
     return(<div>
 
-      <div>
+      {loading ? <div>loading...</div> : null}
 
-      <div>
-        <h2 styleName="h2">PostsDetail</h2>
-        {/*
-        <ul>
-          <li>
-            <Link to={`${match.url}/rendering`}>
-              Rendering with React
-            </Link>
-          </li>
-          <li>
-            <Link to={`${match.url}/components`}>
-              Components
-            </Link>
-          </li>
-          <li>
-            <Link to={`${match.url}/props-v-state`}>
-              Props v. State
-            </Link>
-          </li>
-        </ul>
+      <Meta title={posts ? posts.title : '加载中...'} />
 
-        <Route path={`${match.url}/:topicId`} component={Topic}/>
-        <Route exact path={match.url} render={() => (
-          <h3>Please select a topic.</h3>
-        )}/>
-        */}
-      </div>
+      {posts ?
+        <div className="jumbotron">
+          <h1 className="display-4">{posts.title}</h1>
+          <p className="lead">{posts.topic_id.name}</p>
+          <hr className="my-4" />
+          {posts.content_html ?
+            <div dangerouslySetInnerHTML={{__html:posts.content_html}} />
+            : null}
+        </div>
+        : null}
 
-
-      </div>
     </div>)
   }
 
 }
 
-// PostsDetail = CSSModules(PostsDetail, styles)
-
-PostsDetail.propTypes = {
-  update: PropTypes.func.isRequired
-}
-
 const mapStateToProps = (state, props) => {
+  const { id } = props.match.params;
   return {
+    list: getPostsListByListId(state, id)
   }
 }
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = (dispatch, props) => {
   return {
-    update: bindActionCreators(update, dispatch)
+    loadPostsList: bindActionCreators(loadPostsList, dispatch)
   }
 }
 
-PostsDetail = connect(mapStateToProps,mapDispatchToProps)(PostsDetail)
+PostsDetail = connect(mapStateToProps,mapDispatchToProps)(PostsDetail);
 
-export default PostsDetail
+export default Shell(PostsDetail);

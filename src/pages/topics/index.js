@@ -1,32 +1,21 @@
-import React from 'react'
-import { Route, Link } from 'react-router-dom'
+import React from 'react';
 
-import PropTypes from 'prop-types'
-import { bindActionCreators } from 'redux'
-import { connect } from 'react-redux'
-import { update } from '../../actions/account'
+import Shell from '../../components/shell';
+import Meta from '../../components/meta';
 
-
-import Shell from '../shell'
-
-
-// 纯组件
-export class Topics extends React.PureComponent {
+export class Topics extends React.Component {
 
   constructor(props) {
     super(props)
-    this.state = {
-    }
   }
 
   render() {
     return(<div>
-      <div>
-        <h2>Topics</h2>
-      </div>
+      <Meta title="话题" />
+      <h2>Topics</h2>
     </div>)
   }
 
 }
 
-export default Shell(Topics)
+export default Shell(Topics);

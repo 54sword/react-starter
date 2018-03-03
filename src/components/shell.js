@@ -1,12 +1,11 @@
-import React from 'react'
-import { Route, Link } from 'react-router-dom'
+import React from 'react';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
 
-// import PropTypes from 'prop-types'
-import { bindActionCreators } from 'redux'
-import { connect } from 'react-redux'
-// import { update } from '../../actions/account'
+import parseUrl from '../common/parse-url';
 
-import parseUrl from '../common/parse-url'
+// 壳组件，用于给页面组件，套一个外壳
+// 这样可以通过壳组件，给每个页面，传递参数
 
 const Shell = (Component) => {
 
@@ -17,16 +16,13 @@ const Shell = (Component) => {
     }
 
     constructor(props) {
-      super(props)
+      super(props);
     }
 
     // 组件加载完成
     componentWillMount() {
-
-      // console.log(this.props.staticContext);
-
-      const { search } = this.props.location
-      this.props.location.params = search ? parseUrl(search) : null
+      const { search } = this.props.location;
+      this.props.location.params = search ? parseUrl(search) : null;
       // console.log('进入组件')
     }
 
@@ -46,9 +42,6 @@ const Shell = (Component) => {
     }
 
     render() {
-
-      // console.log(this);
-
       return (<div>
         <Component {...this.props} />
       </div>)
@@ -56,21 +49,14 @@ const Shell = (Component) => {
 
   }
 
-  // Shell.defaultProps = {
-  //   component: _component
-  // }
-
   Shell.contextTypes = {
-    // router: PropTypes.object.isRequired
   }
 
   Shell.propTypes = {
   }
-
+  
   const mapStateToProps = (state) => {
     return {
-      // goBack: getGoBack(state),
-      // me: getProfile(state)
     }
   }
 
@@ -79,8 +65,7 @@ const Shell = (Component) => {
     }
   }
 
-  return connect(mapStateToProps, mapDispatchToProps)(Shell)
+  return connect(mapStateToProps, mapDispatchToProps)(Shell);
 }
 
-
-export default Shell
+export default Shell;

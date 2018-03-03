@@ -1,13 +1,16 @@
-import React from 'react'
-import ReactDOM from 'react-dom'
-import { BrowserRouter } from 'react-router-dom'
-import { Provider } from 'react-redux'
+import React from 'react';
+import ReactDOM from 'react-dom';
+import { BrowserRouter } from 'react-router-dom';
+import { Provider } from 'react-redux';
+
+import configureStore from '../store';
+import createRouter from '../router';
+
+// 引入全局样式
+import '../pages/global.scss';
+
+// [todo]
 // import runtime from 'serviceworker-webpack-plugin/lib/runtime'
-
-import configureStore from '../store'
-import createRouter from '../router'
-// import { RouteArr, Router  } from '../src/router'
-
 // if ('serviceWorker' in navigator) {
 //   const registration = runtime.register();
 // } else {
@@ -15,17 +18,17 @@ import createRouter from '../router'
 // }
 
 // 从页面中获取服务端生产redux数据，作为客户端redux初始值
-const store = configureStore(window.__initState__)
+const store = configureStore(window.__initState__);
 
-const RouterDom = createRouter().dom
+import { getUserInfo } from '../reducers/user';
 
-// let RouterDom = Router();
+let userinfo = getUserInfo(store.getState());
 
-// if (__DEV__) {
-  // 开发模式下，首屏内容会使用服务端渲染的html代码，
-  // 而热更新代码是客户端代码，清空app里面的html，强制用客户端的代码作为显示
-  // document.getElementById('app').innerHTML = ''
-// }
+if (!userinfo || !userinfo.id) {
+  userinfo = null;
+}
+
+const RouterDom = createRouter(userinfo).dom;
 
 ReactDOM.hydrate((
   <Provider store={store}>
@@ -33,4 +36,4 @@ ReactDOM.hydrate((
       <RouterDom />
     </BrowserRouter>
   </Provider>
-), document.getElementById('app'))
+), document.getElementById('app'));

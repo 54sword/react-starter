@@ -1,5 +1,4 @@
 import React from 'react';
-// import { matchRoutes } from 'react-router-config';
 
 /**
  * Returns a new React component, ready to be instantiated.
@@ -15,7 +14,7 @@ exports.generateAsyncRouteComponent = ({ loader, Placeholder }) => {
      * this component. This should only be called one time outside of the
      * normal render path.
      */
-    static load({ store, match, userinfo }) {
+    static load({ store, match }) {
 
       return new Promise((resolve, reject) => {
 
@@ -33,8 +32,9 @@ exports.generateAsyncRouteComponent = ({ loader, Placeholder }) => {
               ResolvedComponent.default.WrappedComponent.defaultProps &&
               ResolvedComponent.default.WrappedComponent.defaultProps.loadData
             ) {
-              result = await ResolvedComponent.default.WrappedComponent.defaultProps.loadData({ store, match, userinfo })
-              // context = await _route.component.WrappedComponent.defaultProps.loadData({ store, match: _match, userinfo })
+              result = await ResolvedComponent.default.WrappedComponent.defaultProps.loadData({ store, match })
+            } else {
+              result = { code: 200 }
             }
 
           }
@@ -52,8 +52,8 @@ exports.generateAsyncRouteComponent = ({ loader, Placeholder }) => {
       this.updateState = this.updateState.bind(this);
       this.state = { Component }
     }
-    
-    componentDidMount() {
+
+    componentWillMount() {
       AsyncRouteComponent.load({})
       .then(this.updateState);
     }

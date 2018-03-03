@@ -1,67 +1,66 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import { bindActionCreators } from 'redux'
-import { connect } from 'react-redux'
-// import { update } from '../../actions/account'
-import { getAccessToken } from '../../reducers/account'
+import React from 'react';
+import PropTypes from 'prop-types';
+import { loadPostsList } from '../../actions/posts';
 
-import { withRouter } from 'react-router-dom'
+// http://blog.csdn.net/ISaiSai/article/details/78094556
+import { withRouter } from 'react-router-dom';
 
-import Shell from '../shell'
+// 壳组件
+import Shell from '../../components/shell';
+import Meta from '../../components/meta';
+import PostsList from '../../components/posts/list';
 
-// 纯组件
 export class Home extends React.Component {
 
   // 服务端渲染
-  static loadData({ store, match, userinfo }) {
-    const { id } = match.params
+  // 加载需要在服务端渲染的数据
+  static loadData({ store, match }) {
     return new Promise(async function (resolve, reject) {
+
+      /* 敲黑板～ 这里是重点～～～～～～～～～～～（为了引起你的注意，我写了这句话）*/
+
+      /**
+       * 这里的 loadPostsList 方法，是在服务端加载 posts 数据，储存到 redux 中。
+       * 这里对应的组件是 PostsList，PostsList组件里面也有 loadPostsList 方法，但它是在客户端执行。
+       * 然后，服务端在渲染 PostsList 组件的时候，我们会先判断如果redux中，是否存在该条数据，如果存在，直接拿该数据渲染
+       */
+
+      await loadPostsList({
+        id: 'home',
+        filter: {
+          sort_by: "create_at",
+          deleted: false,
+          weaken: false
+        }
+      })(store.dispatch, store.getState);
+
       resolve({ code:200 });
     })
   }
 
   constructor(props) {
-    super(props)
-    this.state = {
-    }
-  }
-
-  componentWillMount() {
-
-  }
-
-  componentDidMount() {
-
+    super(props);
   }
 
   render() {
-
-    const { accessToken } = this.props.accessToken
-
     return(<div>
-      <div>
-        <div>首页</div>
-      </div>
+
+      <Meta title="首页" />
+
+      <PostsList
+        id={'home'}
+        filter={{
+          sort_by: "create_at",
+          deleted: false,
+          weaken: false
+        }}
+        />
     </div>)
   }
 
 }
 
-Home.propTypes = {
-  accessToken: PropTypes.object.isRequired,
-}
 
-const mapStateToProps = (state, props) => {
-  return {
-    accessToken: getAccessToken(state)
-  }
-}
+Home = withRouter(Home);
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-  }
-}
-
-Home = withRouter(connect(mapStateToProps,mapDispatchToProps)(Home))
-
-export default Shell(Home)
+export default Shell(Home);

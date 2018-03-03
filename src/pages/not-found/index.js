@@ -1,44 +1,27 @@
-import React from 'react'
-import { Route, Link } from 'react-router-dom'
-import PropTypes from 'prop-types'
-import { bindActionCreators } from 'redux'
-import { connect } from 'react-redux'
+import React from 'react';
 
-// import CSSModules from 'react-css-modules'
-import styles from './style.scss'
+import Shell from '../../components/shell';
+import Meta from '../../components/meta';
 
-// 纯组件
 export class NotFound extends React.Component {
 
+  static loadData({ store, match }) {
+    return new Promise(async function (resolve, reject) {
+      resolve({ code:404 });
+    })
+  }
+
   constructor(props) {
-    super(props)
-    this.state = {
-    }
+    super(props);
   }
 
   render() {
     return(<div>
+      <Meta title="404,无法找到该页面" />
       404,无法找到该页面
     </div>)
   }
 
 }
 
-// NotFound = CSSModules(NotFound, styles)
-
-NotFound.propTypes = {
-}
-
-const mapStateToProps = (state, props) => {
-  return {
-  }
-}
-
-const mapDispatchToProps = (dispatch) => {
-  return {
-  }
-}
-
-NotFound = connect(mapStateToProps,mapDispatchToProps)(NotFound)
-
-export default NotFound
+export default Shell(NotFound);

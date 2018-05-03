@@ -107,16 +107,16 @@ module.exports = {
   plugins: [
 
     // 定义环境变量
-    new webpack.DefinePlugin({
-      // 是否是生产环境
-      'process.env': {
-        NODE_ENV: JSON.stringify(process.env.NODE_ENV),
-      },
-      // 是否是 Node
-      '__NODE__': JSON.stringify(process.env.__NODE__),
-      // 是否是开发环境
-      '__DEV__': JSON.stringify(process.env.NODE_ENV == 'development')
-    }),
+    // new webpack.DefinePlugin({
+    //   // 是否是生产环境
+    //   'process.env': {
+    //     NODE_ENV: JSON.stringify(process.env.NODE_ENV),
+    //   },
+    //   // 是否是 Node
+    //   '__NODE__': JSON.stringify(process.env.__NODE__),
+    //   // 是否是开发环境
+    //   '__DEV__': JSON.stringify(process.env.NODE_ENV == 'development')
+    // }),
 
     // 清空打包目录
     new CleanWebpackPlugin(['dist'], {
@@ -127,20 +127,22 @@ module.exports = {
 
     extractSass,
 
+    /*
     new webpack.optimize.CommonsChunkPlugin({
       name: 'common',
       filename: 'common.[hash].bundle.js'
     }),
+    */
 
-    new webpack.optimize.UglifyJsPlugin({
-      output: {
-        comments: false,
-      },
-      minimize: true,
-      compress: {
-        warnings: false
-      }
-    }),
+    // new webpack.optimize.UglifyJsPlugin({
+    //   output: {
+    //     comments: false,
+    //   },
+    //   minimize: true,
+    //   compress: {
+    //     warnings: false
+    //   }
+    // }),
 
     new HtmlwebpackPlugin({
       filename: path.resolve(__dirname, 'dist/index.ejs'),

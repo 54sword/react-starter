@@ -47,9 +47,9 @@ npm run server
 2、打包文件，除了index.ejs是服务端渲染的模版文件，其他都是客户端使用的文件
 
 ```
-npm run dist
+npm run dist 
 ```
-
+  
 3、将项目上传至你的服务器  
 4、启动服务  
 
@@ -68,20 +68,21 @@ NODE_ENV=production __NODE__=true BABEL_ENV=server pm2 start src/server --name "
 
 ```
 .
-├── config                              # 项目配置文件
-├── dist                                # 所有打包文件储存在这里
-├── src                                 # 程序源文件
-│   ├── actions                         # redux actions
-│   ├── client                          # 客户端入口
-│   ├── common                          # 全局可复用的容器组件
-│   ├── components                      # 全局可复用的容器组件
-│   ├── pages                           # 页面组件
-│   ├── reducers                        # redux reducers
-│   ├── router                          # 路由配置
-│   ├── server                          # 服务端入口
-│   ├── store                           # redux store
-│   └── view                            # html模版文件
-├── .babelrc                            # 程序源文件
+├── config                    			# 项目配置文件
+├── dist                    			# 所有打包文件储存在这里
+├── src                      			# 程序源文件
+│   ├── actions              			# redux actions
+│   ├── client           	  			# 客户端入口
+│   ├── common               			# 全局可复用的容器组件
+│   ├── components          			# 全局可复用的容器组件
+│   ├── pages                			# 页面组件
+│   ├── reducers             			# redux reducers
+│   ├── router               			# 路由配置
+│   ├── server               			# 服务端入口
+│   ├── store                			# redux store
+│   └── view                 			# html模版文件
+├── .babelrc                      		# 程序源文件
 ├── webpack.development.config.js       # 开发环境的webpack配置项
 └── webpack.profuction.config.js        # 生产环境的wbepakc配置项
 ```
+

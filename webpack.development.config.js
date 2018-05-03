@@ -14,6 +14,8 @@ const extractSass = new ExtractTextPlugin({
 
 module.exports = {
 
+  mode: 'production',
+
   devtool: 'source-map',
 
   entry: {
@@ -101,23 +103,24 @@ module.exports = {
   plugins: [
 
     // 定义环境变量
-    new webpack.DefinePlugin({
-      // 是否是生产环境
-      'process.env': {
-        NODE_ENV: JSON.stringify(process.env.NODE_ENV),
-      },
-      // 是否是 Node
-      '__NODE__': JSON.stringify(process.env.__NODE__),
-      // 是否是开发环境
-      '__DEV__': JSON.stringify(process.env.NODE_ENV == 'development')
-    }),
+    // new webpack.DefinePlugin({
+    //   // 是否是生产环境
+    //   'process.env': {
+    //     NODE_ENV: JSON.stringify(process.env.NODE_ENV),
+    //   },
+    //   // 是否是 Node
+    //   '__NODE__': JSON.stringify(process.env.__NODE__),
+    //   // 是否是开发环境
+    //   '__DEV__': JSON.stringify(process.env.NODE_ENV == 'development')
+    // }),
 
     extractSass,
-
+    /*
     new webpack.optimize.CommonsChunkPlugin({
       name: 'common',
       filename: 'common.bundle.js'
     }),
+    */
 
     new HtmlwebpackPlugin({
       filename: path.resolve(__dirname, 'dist/index.ejs'),
@@ -127,10 +130,10 @@ module.exports = {
       reduxState: '<%- reduxState %>'
     }),
 
-    new webpack.optimize.OccurrenceOrderPlugin(),
-    new webpack.NamedModulesPlugin(),
-    new webpack.HotModuleReplacementPlugin(),
-    new webpack.NoEmitOnErrorsPlugin(),
+    // new webpack.optimize.OccurrenceOrderPlugin(),
+    // new webpack.NamedModulesPlugin(),
+    // new webpack.HotModuleReplacementPlugin(),
+    // new webpack.NoEmitOnErrorsPlugin(),
 
     // new ServiceWorkerWebpackPlugin({
     //   entry: path.join(__dirname, 'client/sw.js'),

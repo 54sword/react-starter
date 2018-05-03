@@ -38,7 +38,7 @@ export class Head extends React.Component {
     const { userinfo } = this.props
 
     return (<header>
-        <nav className="navbar fixed-top navbar-expand-md navbar-expand-lg navbar-dark bg-dark bd-navbar">
+        <nav className="navbar fixed-top navbar-expand-md navbar-expand-lg navbar-dark bg-dark bd-navbar" styleName="test">
 
         <NavLink className="navbar-brand" exact to="/">React同构脚手架</NavLink>
 

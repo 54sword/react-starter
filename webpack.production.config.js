@@ -15,6 +15,7 @@ module.exports = {
 
   entry: {
     app: [
+      'babel-polyfill',
       './src/client/index'
     ],
     // 一些主要依赖打包在一起
@@ -52,7 +53,15 @@ module.exports = {
       {
         test: /\.js$/i,
         exclude: /node_modules/,
-        loader: 'babel?presets[]=es2015,presets[]=react,presets[]=stage-0',
+        loader: 'babel',
+        query: {
+          cacheDirectory: true,
+          plugins: [
+            // http://technologyadvice.github.io/es7-decorators-babel6/
+            'transform-decorators-legacy'
+          ],
+          presets: ['es2015', 'react', 'stage-0']
+        }
       },
 
       // scss 文件解析

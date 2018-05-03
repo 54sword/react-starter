@@ -5,7 +5,7 @@ let config = {
   debug: false,
 
   // 域名
-  host: 'location',
+  host: '192.168.1.107',
 
   //  服务端口
   port: 4000,
@@ -18,7 +18,7 @@ let config = {
 
   // 前端打包后，静态资源路径前缀
   // 生成效果如：//localhost:4000/app.bundle.js
-  public_path: '//localhost:4000',
+  public_path: '//192.168.1.107:4000',
 }
 
 // 开发环境配置

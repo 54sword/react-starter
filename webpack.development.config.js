@@ -20,6 +20,8 @@ module.exports = {
 
   entry: {
     app: [
+      'babel-polyfill',
+      'bootstrap/dist/css/bootstrap.min.css',
       './src/client/index',
       'webpack-hot-middleware/client?path=/__webpack_hmr&timeout=20000&reload=true'
     ],
@@ -33,7 +35,6 @@ module.exports = {
       'react-redux',
       'react-document-meta',
       'axios',
-      'bootstrap/dist/css/bootstrap.min.css',
       'jquery',
       'popper.js',
       'bootstrap/dist/js/bootstrap.min.js'
@@ -57,7 +58,15 @@ module.exports = {
       {
         test: /\.js$/i,
         exclude: /node_modules/,
-        loader: 'babel?presets[]=es2015,presets[]=react,presets[]=stage-0',
+        loader: 'babel',
+        query: {
+          cacheDirectory: true,
+          plugins: [
+            // http://technologyadvice.github.io/es7-decorators-babel6/
+            'transform-decorators-legacy'
+          ],
+          presets: ['es2015', 'react', 'stage-0']
+        }
       },
 
       // scss 文件解析

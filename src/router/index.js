@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import { Route, Switch, Redirect } from 'react-router-dom';
 
 // 生成异步加载组件
-import { generateAsyncRouteComponent } from '../components/generateAsyncComponent.js';
+import { asyncRouteComponent } from '../components/generateAsyncComponent.js';
 
 import Head from '../components/head';
 
@@ -44,7 +44,7 @@ export default (user) => {
       path: '/',
       exact: true,
       head: Head,
-      component: generateAsyncRouteComponent({
+      component: asyncRouteComponent({
         loader: () => import('../pages/home')
       }),
       enter: requireAuth
@@ -54,7 +54,7 @@ export default (user) => {
       path: '/posts/:id',
       exact: true,
       head: Head,
-      component: generateAsyncRouteComponent({
+      component: asyncRouteComponent({
         loader: () => import('../pages/posts-detail')
       }),
       enter: requireAuth
@@ -64,7 +64,7 @@ export default (user) => {
       path: '/topics',
       exact: true,
       head: Head,
-      component: generateAsyncRouteComponent({
+      component: asyncRouteComponent({
         loader: () => import('../pages/topics')
       }),
       enter: requireAuth
@@ -74,7 +74,7 @@ export default (user) => {
       path: '/sign-in',
       exact: true,
       // head: Head,
-      component: generateAsyncRouteComponent({
+      component: asyncRouteComponent({
         loader: () => import('../pages/sign-in')
       }),
       enter: requireTourists
@@ -83,7 +83,7 @@ export default (user) => {
     {
       path: '**',
       head: Head,
-      component: generateAsyncRouteComponent({
+      component: asyncRouteComponent({
         loader: () => import('../pages/not-found')
       }),
       enter: triggerEnter

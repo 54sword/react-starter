@@ -9,6 +9,14 @@ import parseUrl from '../common/parse-url';
 
 const Shell = (Component) => {
 
+  if (!Component.loadData) {
+    Component.loadData = ({ store, match }) => {
+      return new Promise(async function (resolve, reject) {
+        resolve({ code:200 });
+      })
+    }
+  }
+
   class Shell extends React.Component {
 
     static defaultProps = {
@@ -54,7 +62,7 @@ const Shell = (Component) => {
 
   Shell.propTypes = {
   }
-  
+
   const mapStateToProps = (state) => {
     return {
     }

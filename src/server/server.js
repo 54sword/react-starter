@@ -78,10 +78,33 @@ app.get('*', async (req, res) => {
     }
   })
 
+  /*
   let context = {};
 
   // 加载页面分片
   context = await _route.component.load({ store, match: _match });
+  */
+
+  let context = {
+    // code
+    // url
+  };
+
+  // 加载异步路由组件
+  const loadAsyncRouterComponent = () => {
+    return new Promise(async (resolve) => {
+      await _route.component.load(async (ResolvedComponent)=>{
+        let loadData = ResolvedComponent.WrappedComponent.defaultProps.loadData;
+        let result = await loadData({ store, match: _match });
+        resolve(result);
+      });
+    });
+  }
+
+  if (_route.component.load) {
+    // 在服务端加载异步组件
+    context = await loadAsyncRouterComponent();
+  }
 
   // 获取路由dom
   const _Router = router.dom;

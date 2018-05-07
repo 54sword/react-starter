@@ -38,20 +38,33 @@ export class PostsDetail extends React.Component {
 
   constructor(props) {
     super(props);
+    this.state = {
+      notFoundPgae: false
+    }
   }
 
-  componentDidMount() {
+  componentWillMount() {
+    // 服务端渲染，404内容显示处理
+    const { list, notFoundPgae } = this.props;
+    if (list && list.data && !list.data[0]) {
+      this.state.notFoundPgae = true;
+    }
+  }
+
+  async componentDidMount() {
 
     const { id } = this.props.match.params;
     const { list, loadPostsList } = this.props;
 
     if (!list || !list.data) {
-      this.props.loadPostsList({
+      await this.props.loadPostsList({
         id,
         filter: {
           _id: id
         }
       })
+
+      this.componentWillMount();
     }
 
   }
@@ -61,9 +74,11 @@ export class PostsDetail extends React.Component {
     const { list } = this.props;
     const { loading, data } = list || {};
     const posts = data && data[0] ? data[0] : null;
+    const { notFoundPgae } = this.state;
 
+    
     // 404 处理
-    if (data && data.length == 0) {
+    if (notFoundPgae) {
       return '404 Not Found';
     }
 

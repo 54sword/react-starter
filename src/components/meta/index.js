@@ -23,6 +23,7 @@ export class Meta extends Component {
     return (
       <DocumentMeta {...metaObj} />
     )
+
   }
 }
 

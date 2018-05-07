@@ -12,23 +12,21 @@ const extractSass = new ExtractTextPlugin({
 })
 
 module.exports = {
-
   entry: {
     app: [
       'babel-polyfill',
-      './src/client/index'
+      'bootstrap/dist/css/bootstrap.min.css',
+      './src/client/index',
     ],
     // 一些主要依赖打包在一起
     vendors: [
       'react',
       'react-dom',
       'react-router',
-      'babel-polyfill',
       'redux',
       'react-redux',
       'react-document-meta',
       'axios',
-      'bootstrap/dist/css/bootstrap.min.css',
       'jquery',
       'popper.js',
       'bootstrap/dist/js/bootstrap.min.js'
@@ -106,17 +104,22 @@ module.exports = {
 
   plugins: [
 
+    new webpack.ProvidePlugin({
+      $: "jquery",
+      jQuery: "jquery"
+    }),
+
     // 定义环境变量
-    // new webpack.DefinePlugin({
-    //   // 是否是生产环境
-    //   'process.env': {
-    //     NODE_ENV: JSON.stringify(process.env.NODE_ENV),
-    //   },
-    //   // 是否是 Node
-    //   '__NODE__': JSON.stringify(process.env.__NODE__),
-    //   // 是否是开发环境
-    //   '__DEV__': JSON.stringify(process.env.NODE_ENV == 'development')
-    // }),
+    new webpack.DefinePlugin({
+      // 是否是生产环境
+      'process.env': {
+        NODE_ENV: JSON.stringify(process.env.NODE_ENV),
+      },
+      // 是否是 Node
+      '__NODE__': JSON.stringify(process.env.__NODE__),
+      // 是否是开发环境
+      '__DEV__': JSON.stringify(process.env.NODE_ENV == 'development')
+    }),
 
     // 清空打包目录
     new CleanWebpackPlugin(['dist'], {
@@ -127,27 +130,25 @@ module.exports = {
 
     extractSass,
 
-    /*
     new webpack.optimize.CommonsChunkPlugin({
       name: 'common',
       filename: 'common.[hash].bundle.js'
     }),
-    */
 
-    // new webpack.optimize.UglifyJsPlugin({
-    //   output: {
-    //     comments: false,
-    //   },
-    //   minimize: true,
-    //   compress: {
-    //     warnings: false
-    //   }
-    // }),
+    new webpack.optimize.UglifyJsPlugin({
+      output: {
+        comments: false,
+      },
+      minimize: true,
+      compress: {
+        warnings: false
+      }
+    }),
 
     new HtmlwebpackPlugin({
       filename: path.resolve(__dirname, 'dist/index.ejs'),
       template: 'src/view/index.html',
-      meta: '<%- meta %>',
+      headMeta: '<%- meta %>',
       htmlDom: '<%- html %>',
       reduxState: '<%- reduxState %>'
     }),

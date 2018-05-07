@@ -9,12 +9,11 @@ const config = require('./config');
 
 const extractSass = new ExtractTextPlugin({
   filename: "[name].css",
-  disable: true
+  disable: true,
+  allChunks: true
 })
 
 module.exports = {
-
-  mode: 'production',
 
   devtool: 'source-map',
 
@@ -30,7 +29,6 @@ module.exports = {
       'react',
       'react-dom',
       'react-router',
-      'babel-polyfill',
       'redux',
       'react-redux',
       'react-document-meta',
@@ -91,6 +89,27 @@ module.exports = {
         })
       },
 
+      /*
+      {
+          test: /\.scss$/,
+          exclude: /node_modules/,
+          use: [
+              {
+                  loader: 'style-loader',
+              },
+              {
+                  loader: 'css-loader',
+                  options: {
+                      importLoaders: 1,
+                  }
+              },
+              {
+                  loader: 'postcss-loader'
+              }
+          ]
+      },
+      */
+
       // 支持
       {
         test: /\.css$/,
@@ -111,38 +130,45 @@ module.exports = {
 
   plugins: [
 
+    // require('precss'),
+    // require('autoprefixer'),
+
+    new webpack.ProvidePlugin({
+      $: "jquery",
+      jQuery: "jquery"
+    }),
+
     // 定义环境变量
-    // new webpack.DefinePlugin({
-    //   // 是否是生产环境
-    //   'process.env': {
-    //     NODE_ENV: JSON.stringify(process.env.NODE_ENV),
-    //   },
-    //   // 是否是 Node
-    //   '__NODE__': JSON.stringify(process.env.__NODE__),
-    //   // 是否是开发环境
-    //   '__DEV__': JSON.stringify(process.env.NODE_ENV == 'development')
-    // }),
+    new webpack.DefinePlugin({
+      // 是否是生产环境
+      'process.env': {
+        NODE_ENV: JSON.stringify(process.env.NODE_ENV),
+      },
+      // 是否是 Node
+      '__NODE__': JSON.stringify(process.env.__NODE__),
+      // 是否是开发环境
+      '__DEV__': JSON.stringify(process.env.NODE_ENV == 'development')
+    }),
 
     extractSass,
-    /*
+
     new webpack.optimize.CommonsChunkPlugin({
       name: 'common',
       filename: 'common.bundle.js'
     }),
-    */
 
     new HtmlwebpackPlugin({
       filename: path.resolve(__dirname, 'dist/index.ejs'),
       template: 'src/view/index.html',
-      meta: '<%- meta %>',
+      headMeta: '<%- meta %>',
       htmlDom: '<%- html %>',
       reduxState: '<%- reduxState %>'
     }),
 
-    // new webpack.optimize.OccurrenceOrderPlugin(),
-    // new webpack.NamedModulesPlugin(),
-    // new webpack.HotModuleReplacementPlugin(),
-    // new webpack.NoEmitOnErrorsPlugin(),
+    new webpack.optimize.OccurrenceOrderPlugin(),
+    new webpack.NamedModulesPlugin(),
+    new webpack.HotModuleReplacementPlugin(),
+    new webpack.NoEmitOnErrorsPlugin()
 
     // new ServiceWorkerWebpackPlugin({
     //   entry: path.join(__dirname, 'client/sw.js'),

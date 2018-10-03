@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import { loadPostsList } from '../../../actions/posts';
 import { getPostsListByListId } from '../../../reducers/posts';
 
-import CSSModules from 'react-css-modules';
+// import CSSModules from 'react-css-modules';
 import styles from './style.scss';
 
 export class PostsList extends React.Component {
@@ -54,7 +54,7 @@ export class PostsList extends React.Component {
             to={`/posts/${item._id}`}
             className="list-group-item list-group-item-action flex-column align-items-start">
             <p className="mb-1">
-              <img src={item.user_id.avatar_url} styleName="avatar" />
+              <img src={item.user_id.avatar_url} className={styles.avatar} />
               {item.user_id.nickname}
             </p>
             <div className="d-flex w-100 justify-content-between">
@@ -71,7 +71,7 @@ export class PostsList extends React.Component {
 
 }
 
-PostsList = CSSModules(PostsList, styles);
+// PostsList = CSSModules(PostsList, styles);
 
 const mapStateToProps = (state, props) => {
   return {

@@ -2,10 +2,10 @@
   "presets": ["es2015", "react", "stage-0"],
   "env": {
     "server": {
-      "plugins": ["css-modules-transform","transform-decorators-legacy","syntax-dynamic-import", "dynamic-import-node"]
+      "plugins": ["transform-decorators-legacy","syntax-dynamic-import", "dynamic-import-node"]
     },
     "client": {
-      "plugins": ["css-modules-transform","transform-decorators-legacy","dynamic-import-webpack"]
+      "plugins": ["transform-decorators-legacy","dynamic-import-webpack"]
     }
   }
 }

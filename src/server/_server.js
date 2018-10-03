@@ -4,26 +4,25 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import compress from 'compression';
-import DocumentMeta from 'react-document-meta';
-import 'ejs';
+// import DocumentMeta from 'react-document-meta';
 
 // 服务端渲染依赖
-import React from 'react';
-import ReactDOMServer from 'react-dom/server';
-import { StaticRouter, matchPath } from 'react-router';
-import { Provider } from 'react-redux';
+// import React from 'react';
+// import ReactDOMServer from 'react-dom/server';
+// import { StaticRouter, matchPath } from 'react-router';
+// import { Provider } from 'react-redux';
 
 // 路由配置
-import configureStore from '../store';
+// import configureStore from '../store';
 // 路由组件
-import createRouter from '../router';
+// import createRouter from '../router';
 // 路由初始化的redux内容
-import { initialStateJSON } from '../reducers';
-import { saveAccessToken, saveUserInfo } from '../actions/user';
+// import { initialStateJSON } from '../reducers';
+// import { saveAccessToken, saveUserInfo } from '../actions/user';
 
 // 配置
 import { port, auth_cookie_name } from '../../config';
-import sign from './sign';
+// import sign from './sign';
 // import webpackHotMiddleware from './webpack-hot-middleware';
 
 const app = express();
@@ -35,21 +34,22 @@ const app = express();
 // if (process.env.NODE_ENV === 'development') webpackHotMiddleware(app);
 
 
-// app.set("view engine","ejs");
+
+app.set("view engine","ejs");
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(compress());
-app.use(express.static('./dist/client'));
-// app.use(express.static('./'));
+app.use(express.static(__dirname + '/../../dist'));
 
-// console.log(express.static(__dirname + '/dist'));
+
 
 // 登录、退出
-app.use('/sign', sign());
+// app.use('/sign', sign());
 
 app.get('*', async (req, res) => {
 
+  /*
   const store = configureStore(JSON.parse(initialStateJSON));
 
   let user = null;
@@ -124,9 +124,13 @@ app.get('*', async (req, res) => {
     });
   } else {
     res.status(context.code);
-    res.render('../dist/server/index.ejs', { html, reduxState, meta });
+    res.render('../dist/index.ejs', { html, reduxState, meta });
   }
+  */
 
+  // res.send('123');
+
+  res.render('../dist/index.ejs');
   res.end();
 
 });

@@ -7,8 +7,8 @@ import { connect } from 'react-redux';
 import { signOut } from '../../actions/user';
 import { getUserInfo } from '../../reducers/user';
 
-import CSSModules from 'react-css-modules';
-import styles from './style.scss';
+// import CSSModules from 'react-css-modules';
+// import styles from './style.scss';
 
 
 export class Head extends React.Component {
@@ -38,7 +38,7 @@ export class Head extends React.Component {
     const { userinfo } = this.props
 
     return (<header>
-        <nav className="navbar fixed-top navbar-expand-md navbar-expand-lg navbar-dark bg-dark bd-navbar" styleName="test">
+        <nav className="navbar fixed-top navbar-expand-md navbar-expand-lg navbar-dark bg-dark bd-navbar">
 
         <NavLink className="navbar-brand" exact to="/">React同构脚手架</NavLink>
 
@@ -76,7 +76,7 @@ export class Head extends React.Component {
 
 }
 
-Head = CSSModules(Head, styles);
+// Head = CSSModules(Head, styles);
 
 const mapStateToProps = (state, props) => {
   return {

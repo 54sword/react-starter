@@ -24,7 +24,7 @@ import { saveAccessToken, saveUserInfo } from '../actions/user';
 // 配置
 import { port, auth_cookie_name } from '../../config';
 import sign from './sign';
-// import webpackHotMiddleware from './webpack-hot-middleware';
+import webpackHotMiddleware from './webpack-hot-middleware';
 
 const app = express();
 
@@ -32,14 +32,18 @@ const app = express();
 // ***** 注意 *****
 // 不要改变如下代码执行位置，否则热更新会失效
 // 开发环境开启修改代码后热更新
-// if (process.env.NODE_ENV === 'development') webpackHotMiddleware(app);
+if (process.env.NODE_ENV === 'development') {
+  webpackHotMiddleware(app);
+}
 
+// console.log(process.env.NODE_ENV);
 
 // app.set("view engine","ejs");
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(compress());
+// app.use(express.static('./dist'));
 app.use(express.static('./dist/client'));
 // app.use(express.static('./'));
 
@@ -125,6 +129,7 @@ app.get('*', async (req, res) => {
   } else {
     res.status(context.code);
     res.render('../dist/server/index.ejs', { html, reduxState, meta });
+    // res.render('../dist/index.ejs', { html, reduxState, meta });
   }
 
   res.end();

@@ -5,13 +5,26 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const ServiceWorkerWebpackPlugin = require('serviceworker-webpack-plugin');
 
-const config = require('./config');
+const config = require('../index');
 
 module.exports = {
 
   mode: 'development',
 
   devtool: 'source-map',
+
+  stats: {
+      cached: false,
+      cachedAssets: false,
+      chunks: false,
+      chunkModules: false,
+      colors: true,
+      hash: false,
+      modules: false,
+      reasons: false,
+      timings: true,
+      version: false,
+  },
 
   entry: {
     app: [
@@ -36,7 +49,7 @@ module.exports = {
   },
 
   output: {
-    path: path.resolve(__dirname, 'dist/client'),
+    path: path.resolve(__dirname, '../../dist/client'),
     filename: '[name].bundle.js',
     publicPath: config.public_path + "/"
   },
@@ -80,10 +93,10 @@ module.exports = {
             },
             {
               loader: `sass`,
-            },
-            {
-              loader: 'postcss-loader'
             }
+            // {
+              // loader: 'postcss-loader'
+            // }
           ]
           // fallback: "style"
         // })
@@ -116,10 +129,10 @@ module.exports = {
         // use: extractSass.extract({
           use: [
             { loader: MiniCssExtractPlugin.loader },
-            { loader: `css` },
-            {
-              loader: 'postcss-loader'
-            }
+            { loader: `css` }
+            // {
+              // loader: 'postcss-loader'
+            // }
           ]
           // fallback: "style"
         // })
@@ -163,13 +176,13 @@ module.exports = {
       // 是否是 Node
       '__NODE__': JSON.stringify(false),
       // 是否是开发环境
-      '__DEV__': JSON.stringify(true)
+      '__DEV__': JSON.stringify(false)
     }),
 
     // extractSass,
 
     new HtmlwebpackPlugin({
-      filename: path.resolve(__dirname, 'dist/server/index.ejs'),
+      filename: path.resolve(__dirname, '../../dist/server/index.ejs'),
       template: 'src/view/index.html',
       headMeta: '<%- meta %>',
       htmlDom: '<%- html %>',

@@ -6,11 +6,11 @@ const config = require('./config');
 
 module.exports = {
 
-  mode: 'development',
+  mode: 'production',
   name: 'server',
   target: 'node',
 
-  devtool: 'source-map',
+  // devtool: 'source-map',
 
   entry: {
     app: [
@@ -86,12 +86,12 @@ module.exports = {
     new webpack.DefinePlugin({
       // 是否是生产环境
       'process.env': {
-        NODE_ENV: JSON.stringify(process.env.NODE_ENV),
+        NODE_ENV: JSON.stringify('production'),
       },
       // 是否是 Node
-      '__NODE__': JSON.stringify(process.env.__NODE__),
+      '__NODE__': JSON.stringify(true),
       // 是否是开发环境
-      '__DEV__': JSON.stringify(process.env.NODE_ENV == 'development')
+      '__DEV__': JSON.stringify(false)
     })
 
   ]

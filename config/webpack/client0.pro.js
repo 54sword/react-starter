@@ -1,18 +1,19 @@
 const webpack = require('webpack');
 const HtmlwebpackPlugin = require('html-webpack-plugin');
 const path = require('path');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+// const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
-const ServiceWorkerWebpackPlugin = require('serviceworker-webpack-plugin');
+// const ServiceWorkerWebpackPlugin = require('serviceworker-webpack-plugin');
 
-const config = require('./config');
-
-const extractSass = new ExtractTextPlugin({
-  filename: "[name].[hash].css",
-  allChunks: true
-})
+const config = require('../index');
 
 module.exports = {
+
+  mode: 'production',
+  name: 'client',
+  target: 'web',
+
   entry: {
     app: [
       'babel-polyfill',
@@ -35,9 +36,22 @@ module.exports = {
   },
 
   output: {
-    path: path.resolve(__dirname, 'dist'),
+    path: path.resolve(__dirname, '../../dist/client'),
     filename: '[name].[hash].js',
     publicPath: config.public_path + "/"
+  },
+
+  optimization: {
+    splitChunks: {
+      cacheGroups: {
+        styles: {
+          name: 'styles',
+          test: /(\.css|\.scss)$/,
+          chunks: 'all',
+          enforce: true
+        }
+      }
+    }
   },
 
   resolveLoader: {
@@ -66,31 +80,36 @@ module.exports = {
       // scss 文件解析
       {
         test: /\.scss$/,
-        use: extractSass.extract({
-          use: [
-            {
-              loader: `css`,
-              options: {
-                modules: true,
-                localIdentName: config.class_scoped_name,
-                minimize: true
-              }
-            },
-            {
-              loader: `sass`,
+        use: [
+          { loader: MiniCssExtractPlugin.loader },
+          {
+            loader: `css`,
+            options: {
+              modules: true,
+              localIdentName: config.class_scoped_name,
+              minimize: true,
+              sourceMap: false
             }
-          ],
-          fallback: "style"
-        })
+          },
+          {
+            loader: `sass`,
+          }
+          // {
+          //   loader: 'postcss-loader'
+          // }
+        ]
       },
 
       // 支持
       {
         test: /\.css$/,
-        use: extractSass.extract({
-          use: [{ loader: `css` }],
-          fallback: "style"
-        })
+        use: [
+          { loader: MiniCssExtractPlugin.loader },
+          { loader: `css` }
+          // {
+          //   loader: 'postcss-loader'
+          // }
+        ]
       },
 
       // 小于8K的图片，转 base64
@@ -105,58 +124,32 @@ module.exports = {
 
   plugins: [
 
-    new webpack.ProvidePlugin({
-      $: "jquery",
-      jQuery: "jquery"
-    }),
-
-    // 定义环境变量
-    new webpack.DefinePlugin({
-      // 是否是生产环境
-      'process.env': {
-        NODE_ENV: JSON.stringify(process.env.NODE_ENV),
-      },
-      // 是否是 Node
-      '__NODE__': JSON.stringify(process.env.__NODE__),
-      // 是否是开发环境
-      '__DEV__': JSON.stringify(process.env.NODE_ENV == 'development')
-    }),
-
     // 清空打包目录
     new CleanWebpackPlugin(['dist'], {
       root: path.resolve(__dirname),
       verbose: true,
       dry: false
     }),
-
-    extractSass,
-
-    new webpack.optimize.CommonsChunkPlugin({
-      name: 'common',
-      filename: 'common.[hash].bundle.js'
+    
+    new MiniCssExtractPlugin({
+      // Options similar to the same options in webpackOptions.output
+      // both options are optional
+      // filename: "[name].[hash].css",
+      // chunkFilename: '[id].[hash].css',
+      // allChunks: false
     }),
 
-    new webpack.optimize.UglifyJsPlugin({
-      output: {
-        comments: false,
-      },
-      minimize: true,
-      compress: {
-        warnings: false
-      }
+    new webpack.ProvidePlugin({
+      $: "jquery",
+      jQuery: "jquery"
     }),
 
     new HtmlwebpackPlugin({
-      filename: path.resolve(__dirname, 'dist/index.ejs'),
+      filename: path.resolve(__dirname, '../../dist/server/index.ejs'),
       template: 'src/view/index.html',
       headMeta: '<%- meta %>',
       htmlDom: '<%- html %>',
       reduxState: '<%- reduxState %>'
-    }),
-
-    // new ServiceWorkerWebpackPlugin({
-    //   entry: path.join(__dirname, 'client/sw.js'),
-    // })
-
+    })
   ]
 }

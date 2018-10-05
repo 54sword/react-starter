@@ -4,7 +4,8 @@
   "description": "React 同构脚手架（内置基础的网站功能，让大家更快上手）",
   "scripts": {
     "dev": "NODE_ENV=development BABEL_ENV=server webpack --config config/webpack/client.dev.js && NODE_ENV=development BABEL_ENV=server webpack --config config/webpack/server.dev.js && node ./dist/server/server.js",
-    "pro": "NODE_ENV=production BABEL_ENV=client webpack --config config/webpack/client.pro.js && NODE_ENV=production BABEL_ENV=server webpack --config config/webpack/server.pro.js && node ./dist/server/server.js"
+    "pro": "NODE_ENV=production BABEL_ENV=client webpack --config config/webpack/client.pro.js && NODE_ENV=production BABEL_ENV=server webpack --config config/webpack/server.pro.js && node ./dist/server/server.js",
+    "server": "node ./dist/server/server.js"
   },
   "engines": {
     "node": ">=8.6.0"

@@ -3,9 +3,9 @@ export default (app) => {
 
   // https://github.com/glenjamin/webpack-hot-middleware/blob/master/example/server.js
   const webpack = require('webpack');
-  const webpackConfig = require('../../webpack.development.config.js');
+  const webpackConfig = require('../../config/webpack/client.dev');
   const compiler = webpack(webpackConfig);
-
+  
   app.use(require("webpack-dev-middleware")(compiler, {
     noInfo: true, publicPath: webpackConfig.output.publicPath
   }));

@@ -21,6 +21,7 @@ let config = {
   public_path: '//localhost:4000',
 }
 
+
 // 开发环境配置
 if (process.env.NODE_ENV == 'development') {
   config.debug = true

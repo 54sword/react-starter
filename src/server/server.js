@@ -32,6 +32,7 @@ const app = express();
 // ***** 注意 *****
 // 不要改变如下代码执行位置，否则热更新会失效
 // 开发环境开启修改代码后热更新
+
 if (process.env.NODE_ENV === 'development') {
   webpackHotMiddleware(app);
 }

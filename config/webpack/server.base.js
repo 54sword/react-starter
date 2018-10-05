@@ -2,11 +2,11 @@ const webpack = require('webpack');
 const HtmlwebpackPlugin = require('html-webpack-plugin');
 const path = require('path');
 const nodeExternals = require('webpack-node-externals');
-const config = require('./config');
+const config = require('../index');
 
 module.exports = {
 
-  mode: 'production',
+  // mode: 'development',
   name: 'server',
   target: 'node',
 
@@ -14,7 +14,8 @@ module.exports = {
 
   entry: {
     app: [
-      './src/server/index'
+      // './src/server/index'
+      path.resolve(__dirname, '../../src/server/index.js')
     ]
   },
 
@@ -28,7 +29,7 @@ module.exports = {
   ],
 
   output: {
-    path: path.resolve(__dirname, 'dist/server'),
+    path: path.resolve(__dirname, '../../dist/server'),
     filename: 'server.js',
     publicPath: config.public_path + "/"
   },
@@ -81,18 +82,5 @@ module.exports = {
   },
 
   plugins: [
-
-    // 定义环境变量
-    new webpack.DefinePlugin({
-      // 是否是生产环境
-      'process.env': {
-        NODE_ENV: JSON.stringify('production'),
-      },
-      // 是否是 Node
-      '__NODE__': JSON.stringify(true),
-      // 是否是开发环境
-      '__DEV__': JSON.stringify(false)
-    })
-
   ]
 }

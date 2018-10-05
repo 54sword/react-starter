@@ -50,10 +50,10 @@ export class Head extends React.Component {
 
           <ul className="navbar-nav mr-auto">
             <li className="nav-item">
-              <NavLink className="nav-link" exact to="/">Home 11</NavLink>
+              <NavLink className="nav-link" exact to="/">Home</NavLink>
             </li>
             <li className="nav-item">
-              <NavLink className="nav-link" exact to="/topics">Topics 22</NavLink>
+              <NavLink className="nav-link" exact to="/topics">Topics</NavLink>
             </li>
           </ul>
 

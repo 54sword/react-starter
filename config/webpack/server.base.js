@@ -45,7 +45,8 @@ module.exports = {
       {
         test: /\.js$/i,
         exclude: /node_modules/,
-        loader: 'babel',
+        loader: 'babel'
+        /*
         query: {
           cacheDirectory: true,
           plugins: [
@@ -54,6 +55,7 @@ module.exports = {
           ],
           presets: ['es2015', 'react', 'stage-0']
         }
+        */
       },
 
       // scss 文件解析

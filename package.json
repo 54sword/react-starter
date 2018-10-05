@@ -1,6 +1,6 @@
 {
   "name": "react-starter",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "React 同构脚手架（内置基础的网站功能，让大家更快上手）",
   "scripts": {
     "dev": "NODE_ENV=development BABEL_ENV=server webpack --config config/webpack/client.dev.js && NODE_ENV=development BABEL_ENV=server webpack --config config/webpack/server.dev.js && node ./dist/server/server.js",
@@ -14,7 +14,7 @@
   "license": "MIT",
   "dependencies": {
     "axios": "^0.18.0",
-    "body-parser": "^1.18.2",
+    "body-parser": "^1.18.3",
     "bootstrap": "^4.0.0",
     "compression": "^1.7.1",
     "cookie-parser": "^1.4.3",
@@ -38,33 +38,28 @@
   },
   "devDependencies": {
     "@babel/polyfill": "^7.0.0",
-    "autoprefixer": "^9.1.5",
     "babel-core": "^6.26.3",
     "babel-loader": "^7.1.2",
     "babel-plugin-dynamic-import-node": "^1.2.0",
     "babel-plugin-dynamic-import-webpack": "^1.0.2",
     "babel-plugin-syntax-dynamic-import": "^6.18.0",
     "babel-plugin-transform-decorators-legacy": "^1.3.4",
-    "babel-polyfill": "^6.26.0",
     "babel-preset-es2015": "^6.24.1",
     "babel-preset-react": "^6.24.1",
     "babel-preset-stage-0": "^6.24.1",
+    "babel-register": "^6.26.0",
     "clean-webpack-plugin": "^0.1.17",
-    "cross-env": "^5.2.0",
-    "css-loader": "^0.28.7",
-    "file-loader": "^1.1.11",
+    "css-loader": "^1.0.0",
+    "file-loader": "^2.0.0",
     "html-webpack-plugin": "^3.2.0",
     "mini-css-extract-plugin": "^0.4.3",
-    "postcss-loader": "^3.0.0",
-    "precss": "^3.1.2",
     "react-css-modules": "^4.7.2",
     "sass-loader": "^6.0.6",
     "serviceworker-webpack-plugin": "^0.2.3",
-    "style-loader": "^0.19.1",
-    "url-loader": "^0.6.2",
+    "url-loader": "^1.1.1",
     "webpack": "^4.20.2",
     "webpack-cli": "^3.1.2",
     "webpack-dev-server": "^3.1.9",
-    "webpack-hot-middleware": "^2.21.1"
+    "webpack-hot-middleware": "^2.24.2"
   }
 }

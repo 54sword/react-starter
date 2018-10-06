@@ -7,11 +7,13 @@ import compress from 'compression';
 import DocumentMeta from 'react-document-meta';
 import 'ejs';
 
+
 // 服务端渲染依赖
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 import { StaticRouter, matchPath } from 'react-router';
 import { Provider } from 'react-redux';
+import Loadable from 'react-loadable';
 
 // 路由配置
 import configureStore from '../store';
@@ -87,7 +89,7 @@ app.get('*', async (req, res) => {
   })
 
   let context = {
-    // code
+    code: 200
     // url
   };
 
@@ -102,13 +104,27 @@ app.get('*', async (req, res) => {
     });
   }
 
-  if (_route.component.load) {
-    // 在服务端加载异步组件
-    context = await loadAsyncRouterComponent();
+  // console.log(Reflect.ownKeys(_route.component));
+
+  // console.log(_route);
+
+  if (_route.loadData) {
+    context = await _route.loadData({ store, match: _match });
+    // console.log(context);
+    await Loadable.preloadAll();
   }
+
+  // if (_route.component.load || _route.loadData) {
+    // 在服务端加载异步组件
+    // context = await loadAsyncRouterComponent();
+  // }
+
+
 
   // 获取路由dom
   const _Router = router.dom;
+
+  // console.log(_Router);
 
   let html = ReactDOMServer.renderToString(
     <Provider store={store}>

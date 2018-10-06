@@ -73,7 +73,7 @@ module.exports = {
       {
         test: /\.js$/i,
         exclude: /node_modules/,
-        loader: 'babel'
+        loader: 'babel-loader'
         /*
         query: {
           cacheDirectory: false,

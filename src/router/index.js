@@ -1,11 +1,15 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Route, Switch, Redirect } from 'react-router-dom';
+import Loadable from 'react-loadable';
 
 // 生成异步加载组件
-import { asyncRouteComponent } from '../components/generateAsyncComponent.js';
+// import asyncRouteComponent from '../components/generateAsyncComponent.js';
+
 
 import Head from '../components/head';
+
+import { loadData } from '../pages/home';
 
 /**
  * 创建路由
@@ -44,18 +48,27 @@ export default (user) => {
       path: '/',
       exact: true,
       head: Head,
-      component: asyncRouteComponent({
-        loader: () => import('../pages/home')
+      // component: asyncRouteComponent({
+      //   loader: () => import('../pages/home')
+      // }),
+      component: Loadable({
+        loader: () => import('../pages/home'),
+        loading: () => <div>Loading...</div>
       }),
-      enter: requireAuth
+      enter: requireAuth,
+      loadData
     },
 
     {
       path: '/posts/:id',
       exact: true,
       head: Head,
-      component: asyncRouteComponent({
-        loader: () => import('../pages/posts-detail')
+      // component: asyncRouteComponent({
+      //   loader: () => import('../pages/posts-detail')
+      // }),
+      component: Loadable({
+        loader: () => import('../pages/posts-detail'),
+        loading: () => <div>Loading...</div>,
       }),
       enter: requireAuth
     },
@@ -64,8 +77,12 @@ export default (user) => {
       path: '/topics',
       exact: true,
       head: Head,
-      component: asyncRouteComponent({
-        loader: () => import('../pages/topics')
+      // component: asyncRouteComponent({
+      //   loader: () => import('../pages/topics')
+      // }),
+      component: Loadable({
+        loader: () => import('../pages/topics'),
+        loading: () => <div>Loading...</div>,
       }),
       enter: requireAuth
     },
@@ -74,8 +91,12 @@ export default (user) => {
       path: '/sign-in',
       exact: true,
       // head: Head,
-      component: asyncRouteComponent({
-        loader: () => import('../pages/sign-in')
+      // component: asyncRouteComponent({
+        // loader: () => import('../pages/sign-in')
+      // }),
+      component: Loadable({
+        loader: () => import('../pages/sign-in'),
+        loading: () => <div>Loading...</div>,
       }),
       enter: requireTourists
     },
@@ -83,8 +104,12 @@ export default (user) => {
     {
       path: '**',
       head: Head,
-      component: asyncRouteComponent({
-        loader: () => import('../pages/not-found')
+      // component: asyncRouteComponent({
+      //   loader: () => import('../pages/not-found')
+      // }),
+      component: Loadable({
+        loader: () => import('../pages/not-found'),
+        loading: () => <div>Loading...</div>,
       }),
       enter: triggerEnter
     }

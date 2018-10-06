@@ -1,11 +1,24 @@
 {
-  "presets": ["es2015", "react", "stage-0"],
+  "presets": [
+    "@babel/preset-env",
+    "@babel/preset-react",
+    "@babel/preset-flow"
+  ],
   "env": {
     "server": {
-      "plugins": ["transform-decorators-legacy","syntax-dynamic-import", "dynamic-import-node"]
+      "plugins": [
+        ["@babel/plugin-proposal-decorators", { "legacy": true }],
+        "@babel/plugin-proposal-class-properties",
+        "syntax-dynamic-import",
+        "dynamic-import-node",
+      ]
     },
     "client": {
-      "plugins": ["transform-decorators-legacy","dynamic-import-webpack"]
+      "plugins": [
+        ["@babel/plugin-proposal-decorators", { "legacy": true }],
+        "@babel/plugin-syntax-dynamic-import",
+        "@babel/plugin-proposal-class-properties"
+      ]
     }
   }
 }

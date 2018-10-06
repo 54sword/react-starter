@@ -1,7 +1,7 @@
 import React from 'react';
 import Loading from './ui/loading';
 
-exports.asyncRouteComponent = ({ loader, Placeholder }) => {
+export default asyncRouteComponent = ({ loader, Placeholder }) => {
 
   let Component = null;
 

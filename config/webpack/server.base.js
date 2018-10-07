@@ -14,7 +14,6 @@ module.exports = {
     app: [
       '@babel/polyfill',
       './src/server/index'
-      // path.resolve(__dirname, '../../src/server/index.js')
     ]
   },
 

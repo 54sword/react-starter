@@ -1,11 +1,13 @@
 {
   "name": "react-starter",
   "version": "2.0.0",
-  "description": "React 同构脚手架（内置基础的网站功能，让大家更快上手）",
+  "description": "React 同构脚手架",
   "scripts": {
     "start": "NODE_ENV=development node ./scripts/start.js",
     "dev": "NODE_ENV=development webpack --config config/webpack/server.dev.js && NODE_ENV=development webpack --config config/webpack/client.dev.js && node ./dist/server/server.js",
-    "pro": "NODE_ENV=production webpack --config config/webpack/server.pro.js && NODE_ENV=production webpack --config config/webpack/client.pro.js && node ./dist/server/server.js"
+    "pro": "NODE_ENV=production webpack --config config/webpack/server.pro.js && NODE_ENV=production webpack --config config/webpack/client.pro.js && node ./dist/server/server.js",
+    "dist": "NODE_ENV=production webpack --config config/webpack/server.pro.js && NODE_ENV=production webpack --config config/webpack/client.pro.js",
+    "server": "node ./dist/server/server.js"
   },
   "engines": {
     "node": ">=8.6.0"
@@ -51,6 +53,7 @@
     "@babel/preset-stage-0": "^7.0.0",
     "@babel/register": "^7.0.0",
     "babel-loader": "^8.0.4",
+    "clean-webpack-plugin": "^0.1.19",
     "css-hot-loader": "^1.4.2",
     "css-loader": "^1.0.0",
     "file-loader": "^2.0.0",

@@ -47,11 +47,11 @@ const run = async () => {
       return true;
     }
   });
-  
+
   // 预先加载首屏的js（否则会出现，loading 一闪的情况）
-  if (_route && _route.component && _route.component.preload && _route.loadData) {
+  // if (_route && _route.component && _route.component.preload && _route.loadData) {
     await _route.component.preload();
-  }
+  // }
 
   ReactDOM.hydrate((
     <Provider store={store}>

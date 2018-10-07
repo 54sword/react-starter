@@ -7,7 +7,7 @@ let config = {
   // 域名
   host: 'localhost',
 
-  //  服务端口
+  // 服务端口
   port: 4000,
 
   // 登录token，cookie 的名称

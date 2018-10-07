@@ -12,6 +12,4 @@ const config = {
   mode: 'development'
 };
 
-// config.entry.app.push('webpack-hot-middleware/client?path=/__webpack_hmr&timeout=20000&reload=true')
-
 module.exports = config;

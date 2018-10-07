@@ -9,7 +9,16 @@ import { getPostsListByListId } from '../../../reducers/posts';
 import CSSModules from 'react-css-modules';
 import styles from './style.scss';
 
-export class PostsList extends React.Component {
+@connect(
+  (state, props) => ({
+    list: getPostsListByListId(state, props.id)
+  }),
+  dispatch => ({
+    loadPostsList: bindActionCreators(loadPostsList, dispatch)
+  })
+)
+@CSSModules(styles)
+export default class PostsList extends React.Component {
 
   static propTypes = {
     // 要获取的列表的id
@@ -72,7 +81,7 @@ export class PostsList extends React.Component {
   }
 
 }
-
+/*
 PostsList = CSSModules(PostsList, styles);
 
 const mapStateToProps = (state, props) => {
@@ -90,3 +99,4 @@ const mapDispatchToProps = (dispatch, props) => {
 PostsList = connect(mapStateToProps,mapDispatchToProps)(PostsList);
 
 export default PostsList;
+*/

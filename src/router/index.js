@@ -6,10 +6,11 @@ import Loadable from 'react-loadable';
 // 生成异步加载组件
 // import asyncRouteComponent from '../components/generateAsyncComponent.js';
 
-
 import Head from '../components/head';
+import Loading from '../components/ui/loading';
 
-import { loadData } from '../pages/home';
+import HomeLoadData from '../pages/home/load-data';
+import PostsDetailLoadData from '../pages/posts-detail/load-data';
 
 /**
  * 创建路由
@@ -53,10 +54,10 @@ export default (user) => {
       // }),
       component: Loadable({
         loader: () => import('../pages/home'),
-        loading: () => <div>Loading...</div>
+        loading: () => <Loading />
       }),
       enter: requireAuth,
-      loadData
+      loadData: HomeLoadData
     },
 
     {
@@ -68,9 +69,10 @@ export default (user) => {
       // }),
       component: Loadable({
         loader: () => import('../pages/posts-detail'),
-        loading: () => <div>Loading...</div>,
+        loading: () => <Loading />
       }),
-      enter: requireAuth
+      enter: requireAuth,
+      loadData: PostsDetailLoadData
     },
 
     {
@@ -82,7 +84,7 @@ export default (user) => {
       // }),
       component: Loadable({
         loader: () => import('../pages/topics'),
-        loading: () => <div>Loading...</div>,
+        loading: () => <Loading />
       }),
       enter: requireAuth
     },
@@ -96,7 +98,7 @@ export default (user) => {
       // }),
       component: Loadable({
         loader: () => import('../pages/sign-in'),
-        loading: () => <div>Loading...</div>,
+        loading: () => <Loading />
       }),
       enter: requireTourists
     },
@@ -109,7 +111,7 @@ export default (user) => {
       // }),
       component: Loadable({
         loader: () => import('../pages/not-found'),
-        loading: () => <div>Loading...</div>,
+        loading: () => <Loading />
       }),
       enter: triggerEnter
     }

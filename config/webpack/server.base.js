@@ -2,23 +2,21 @@ const webpack = require('webpack');
 const HtmlwebpackPlugin = require('html-webpack-plugin');
 const path = require('path');
 const nodeExternals = require('webpack-node-externals');
+
 const config = require('../index');
 
 module.exports = {
 
-  // mode: 'development',
   name: 'server',
   target: 'node',
 
-  // devtool: 'source-map',
-
   entry: {
     app: [
-      // './src/server/index'
-      path.resolve(__dirname, '../../src/server/index.js')
+      '@babel/polyfill',
+      './src/server/index'
+      // path.resolve(__dirname, '../../src/server/index.js')
     ]
   },
-
 
   externals: [
     nodeExternals({
@@ -46,16 +44,6 @@ module.exports = {
         test: /\.js$/i,
         exclude: /node_modules/,
         loader: 'babel'
-        /*
-        query: {
-          cacheDirectory: true,
-          plugins: [
-            // http://technologyadvice.github.io/es7-decorators-babel6/
-            'transform-decorators-legacy'
-          ],
-          presets: ['es2015', 'react', 'stage-0']
-        }
-        */
       },
 
       // scss 文件解析
@@ -84,5 +72,11 @@ module.exports = {
   },
 
   plugins: [
+
+    new webpack.DefinePlugin({
+      __SERVER__: 'true',
+      __CLIENT__: 'false'
+    })
+
   ]
 }

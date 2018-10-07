@@ -26,18 +26,19 @@ import { saveAccessToken, saveUserInfo } from '../actions/user';
 // 配置
 import { port, auth_cookie_name } from '../../config';
 import sign from './sign';
-import webpackHotMiddleware from './webpack-hot-middleware';
+// import webpackHotMiddleware from './webpack-hot-middleware';
 
 const app = express();
-
 
 // ***** 注意 *****
 // 不要改变如下代码执行位置，否则热更新会失效
 // 开发环境开启修改代码后热更新
 
-if (process.env.NODE_ENV === 'development') {
-  webpackHotMiddleware(app);
-}
+
+// if (process.env.NODE_ENV === 'development') {
+  // webpackHotMiddleware(app);
+// }
+
 
 // console.log(process.env.NODE_ENV);
 
@@ -51,6 +52,9 @@ app.use(express.static('./dist/client'));
 // app.use(express.static('./'));
 
 // console.log(express.static(__dirname + '/dist'));
+
+
+
 
 // 登录、退出
 app.use('/sign', sign());
@@ -104,15 +108,17 @@ app.get('*', async (req, res) => {
     });
   }
 
-  // console.log(Reflect.ownKeys(_route.component));
-
-  // console.log(_route);
+  // console.log(_route.component);
+  // console.log(_route.component.loadData);
 
   if (_route.loadData) {
     context = await _route.loadData({ store, match: _match });
     // console.log(context);
-    await Loadable.preloadAll();
   }
+
+  await _route.component.preload();
+
+  // await Loadable.preloadAll();
 
   // if (_route.component.load || _route.loadData) {
     // 在服务端加载异步组件

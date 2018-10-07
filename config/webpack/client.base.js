@@ -15,25 +15,8 @@ module.exports = {
   entry: {
     app: [
       '@babel/polyfill',
-      // 'bootstrap/dist/css/bootstrap.min.css',
       './src/client/index.js'
-      // path.resolve(__dirname, '../../src/client/index.js')
     ]
-    /*
-    // 一些主要依赖打包在一起
-    vendors: [
-      'react',
-      'react-dom',
-      'react-router',
-      'redux',
-      'react-redux',
-      'react-document-meta',
-      'axios',
-      'jquery',
-      'popper.js',
-      'bootstrap/dist/js/bootstrap.min.js'
-    ]
-    */
   },
 
   output: {
@@ -47,9 +30,9 @@ module.exports = {
   },
 
   optimization: {
+    namedModules: true,
+    noEmitOnErrors: true,
     splitChunks: {
-      // noEmitOnErrors: true,
-      // minimize: false,
       cacheGroups: {
         styles: {
           name: 'styles',
@@ -58,9 +41,9 @@ module.exports = {
           enforce: true
         },
         commons: {
-            test: /[\\/]node_modules[\\/]/,
-            name: 'vendor',
-            chunks: 'all'
+          test: /[\\/]node_modules[\\/]/,
+          name: 'vendor',
+          chunks: 'all'
         }
       }
     }
@@ -74,30 +57,21 @@ module.exports = {
         test: /\.js$/i,
         exclude: /node_modules/,
         loader: 'babel-loader'
-        /*
-        query: {
-          cacheDirectory: false,
-          plugins: [
-            // http://technologyadvice.github.io/es7-decorators-babel6/
-            'transform-decorators-legacy'
-          ],
-          presets: ['es2015', 'react', 'stage-0']
-        }
-        */
       },
 
       // scss 文件解析
       {
         test: /\.scss$/,
         use: [
+          'css-hot-loader',
           { loader: MiniCssExtractPlugin.loader },
           {
             loader: `css`,
             options: {
               modules: true,
-              localIdentName: config.class_scoped_name
-              // minimize: true,
-              // sourceMap: false
+              localIdentName: config.class_scoped_name,
+              minimize: true,
+              sourceMap: true
             }
           },
           { loader: `sass` }
@@ -108,6 +82,7 @@ module.exports = {
       {
         test: /\.css$/,
         use: [
+          'css-hot-loader',
           { loader: MiniCssExtractPlugin.loader },
           { loader: `css` }
         ]
@@ -123,15 +98,16 @@ module.exports = {
   },
 
   plugins: [
+
+    new webpack.DefinePlugin({
+      __SERVER__: 'false',
+      __CLIENT__: 'true'
+    }),
+
     // 提取css插件
     new MiniCssExtractPlugin({
       filename: devMode ? "[name].css" : "[name].[hash].css"
     }),
-
-    // new webpack.ProvidePlugin({
-      // $: "jquery",
-      // jQuery: "jquery"
-    // }),
 
     // 创建视图模版文件，给server使用
     // 主要是打包后的添加的css、js静态文件路径添加到模版中
@@ -142,10 +118,6 @@ module.exports = {
       htmlDom: '<%- html %>',
       reduxState: '<%- reduxState %>'
     }),
-
-    // 开发环境下的热更新
-    // new webpack.HotModuleReplacementPlugin()
-    // new webpack.NoEmitOnErrorsPlugin()
 
     // serviceworker 还在研究中
     // new ServiceWorkerWebpackPlugin({

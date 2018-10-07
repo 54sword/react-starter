@@ -7,34 +7,19 @@ import { getPostsListByListId } from '../../reducers/posts';
 
 import Shell from '../../components/shell';
 import Meta from '../../components/meta';
+import Loading from '../../components/ui/loading';
 
-export class PostsDetail extends React.Component {
 
-  // 服务端渲染
-  // 加载需要在服务端渲染的数据
-  static loadData({ store, match, userinfo }) {
-    return new Promise(async function (resolve, reject) {
-
-      const { id } = match.params;
-
-      const [ err, data ] = await loadPostsList({
-        id: id,
-        filter: {
-          _id: id,
-          deleted: false,
-          weaken: false
-        }
-      })(store.dispatch, store.getState);
-
-      // 没有找到帖子，设置页面 http code 为404
-      if (err || data.length == 0) {
-        resolve({ code:404 });
-      } else {
-        resolve({ code:200 });
-      }
-
-    })
-  }
+@Shell
+@connect(
+  (state, props) => ({
+    list: getPostsListByListId(state, props.match.params.id)
+  }),
+  dispatch => ({
+    loadPostsList: bindActionCreators(loadPostsList, dispatch)
+  })
+)
+export default class PostsDetail extends React.Component {
 
   constructor(props) {
     super(props);
@@ -64,7 +49,7 @@ export class PostsDetail extends React.Component {
         }
       })
 
-      this.componentWillMount();
+      // this.componentWillMount();
     }
 
   }
@@ -76,7 +61,7 @@ export class PostsDetail extends React.Component {
     const posts = data && data[0] ? data[0] : null;
     const { notFoundPgae } = this.state;
 
-    
+
     // 404 处理
     if (notFoundPgae) {
       return '404 Not Found';
@@ -84,7 +69,7 @@ export class PostsDetail extends React.Component {
 
     return(<div>
 
-      {loading ? <div>loading...</div> : null}
+      {loading ? <Loading /> : null}
 
       <Meta title={posts ? posts.title : '加载中...'} />
 
@@ -103,20 +88,3 @@ export class PostsDetail extends React.Component {
   }
 
 }
-
-const mapStateToProps = (state, props) => {
-  const { id } = props.match.params;
-  return {
-    list: getPostsListByListId(state, id)
-  }
-}
-
-const mapDispatchToProps = (dispatch, props) => {
-  return {
-    loadPostsList: bindActionCreators(loadPostsList, dispatch)
-  }
-}
-
-PostsDetail = connect(mapStateToProps,mapDispatchToProps)(PostsDetail);
-
-export default Shell(PostsDetail);

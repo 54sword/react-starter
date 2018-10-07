@@ -10,8 +10,16 @@ import { getUserInfo } from '../../reducers/user';
 import CSSModules from 'react-css-modules';
 import styles from './style.scss';
 
-
-export class Head extends React.Component {
+@connect(
+  (state, props) => ({
+    userinfo: getUserInfo(state)
+  }),
+  dispatch => ({
+    signOut: bindActionCreators(signOut, dispatch)
+  })
+)
+@CSSModules(styles)
+export default class Head extends React.Component {
 
   static propTypes = {
     userinfo: PropTypes.object.isRequired,
@@ -75,21 +83,3 @@ export class Head extends React.Component {
   }
 
 }
-
-Head = CSSModules(Head, styles);
-
-const mapStateToProps = (state, props) => {
-  return {
-    userinfo: getUserInfo(state)
-  }
-}
-
-const mapDispatchToProps = (dispatch) => {
-  return {
-    signOut: bindActionCreators(signOut, dispatch)
-  }
-}
-
-Head = connect(mapStateToProps,mapDispatchToProps)(Head);
-
-export default Head;

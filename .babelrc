@@ -4,21 +4,9 @@
     "@babel/preset-react",
     "@babel/preset-flow"
   ],
-  "env": {
-    "server": {
-      "plugins": [
-        ["@babel/plugin-proposal-decorators", { "legacy": true }],
-        "@babel/plugin-proposal-class-properties",
-        "syntax-dynamic-import",
-        "dynamic-import-node",
-      ]
-    },
-    "client": {
-      "plugins": [
-        ["@babel/plugin-proposal-decorators", { "legacy": true }],
-        "@babel/plugin-syntax-dynamic-import",
-        "@babel/plugin-proposal-class-properties"
-      ]
-    }
-  }
+  "plugins": [
+    ["@babel/plugin-proposal-decorators", { "legacy": true }],
+    "@babel/plugin-proposal-class-properties",
+    "@babel/plugin-syntax-dynamic-import"
+  ]
 }

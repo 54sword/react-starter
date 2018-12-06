@@ -1,30 +1,32 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react'
+import PropTypes from 'prop-types'
+import MetaTags, { ReactTitle } from 'react-meta-tags'
 
-// https://github.com/kodyl/react-document-meta
-import DocumentMeta from 'react-document-meta';
+import { name } from '../../../config'
 
-export class Meta extends Component {
-
+export default class Meta extends Component {
   constructor(props) {
-    super(props);
+    super(props)
+  }
+
+  static propTypes = {
+    title: PropTypes.string,
+    children: PropTypes.any
   }
 
   render() {
+    const { title } = this.props
 
-    let metaObj = {}
+    let _title = ''
 
-    const { title, description, canonical, meta } = this.props;
-
-    if (title) metaObj.title = title;
-    if (description) metaObj.description = description;
-    if (canonical) metaObj.canonical = canonical;
-    if (meta) metaObj.title = meta;
+    _title += title || name
+    if (title) _title += ` - ${name}`
 
     return (
-      <DocumentMeta {...metaObj} />
+      <Fragment>
+        <ReactTitle title={_title} />
+        {this.props.children ? <MetaTags>{this.props.children}</MetaTags> : null}
+      </Fragment>
     )
-
   }
 }
-
-export default Meta;

@@ -1,14 +1,13 @@
-import React from 'react';
-import { Link, NavLink } from 'react-router-dom';
-import PropTypes from 'prop-types';
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
+import React from 'react'
+import { Link, NavLink } from 'react-router-dom'
+import PropTypes from 'prop-types'
+import { bindActionCreators } from 'redux'
+import { connect } from 'react-redux'
 
-import { signOut } from '../../actions/user';
-import { getUserInfo } from '../../reducers/user';
+import { signOut } from '../../actions/user'
+import { getUserInfo } from '../../reducers/user'
 
-import CSSModules from 'react-css-modules';
-import styles from './style.scss';
+import './style.scss'
 
 @connect(
   (state, props) => ({
@@ -18,68 +17,78 @@ import styles from './style.scss';
     signOut: bindActionCreators(signOut, dispatch)
   })
 )
-@CSSModules(styles)
 export default class Head extends React.Component {
-
   static propTypes = {
     userinfo: PropTypes.object.isRequired,
     signOut: PropTypes.func.isRequired
   }
 
   constructor(props) {
-    super(props);
-    this.signOut = this.signOut.bind(this);
+    super(props)
+    this.signOut = this.signOut.bind(this)
   }
 
   async signOut() {
-    let [err, success] = await this.props.signOut();
+    let [err, success] = await this.props.signOut()
     if (success) {
       // 退出成功跳转到首页
-      window.location.href = '/';
+      window.location.href = '/'
     } else {
-      alert('退出失败');
+      alert('退出失败')
     }
   }
 
   render() {
-
     const { userinfo } = this.props
 
-    return (<header>
+    return (
+      <header>
         <nav className="navbar fixed-top navbar-expand-md navbar-expand-lg navbar-dark bg-dark bd-navbar" styleName="test">
+          <NavLink className="navbar-brand" exact to="/">
+            React同构脚手架
+          </NavLink>
 
-        <NavLink className="navbar-brand" exact to="/">React同构脚手架</NavLink>
+          <button
+            className="navbar-toggler"
+            type="button"
+            data-toggle="collapse"
+            data-target="#navbarText"
+            aria-controls="navbarText"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <span className="navbar-toggler-icon" />
+          </button>
 
-        <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
-          <span className="navbar-toggler-icon"></span>
-        </button>
-
-        <div className="collapse navbar-collapse" id="navbarText">
-
-          <ul className="navbar-nav mr-auto">
-            <li className="nav-item">
-              <NavLink className="nav-link" exact to="/">Home</NavLink>
-            </li>
-            <li className="nav-item">
-              <NavLink className="nav-link" exact to="/topics">Topics</NavLink>
-            </li>
-          </ul>
-
-          <span className="mt-2 mt-md-0">
+          <div className="collapse navbar-collapse" id="navbarText">
             <ul className="navbar-nav mr-auto">
               <li className="nav-item">
-                <span className="nav-link">{userinfo.nickname}</span>
+                <NavLink className="nav-link" exact to="/">
+                  Home
+                </NavLink>
               </li>
               <li className="nav-item">
-                <a className="nav-link" href="javascript:void(0)" onClick={this.signOut}>退出</a>
+                <NavLink className="nav-link" exact to="/topics">
+                  Topics
+                </NavLink>
               </li>
             </ul>
-          </span>
 
-        </div>
-      </nav>
-    </header>)
-
+            <span className="mt-2 mt-md-0">
+              <ul className="navbar-nav mr-auto">
+                <li className="nav-item">
+                  <span className="nav-link">{userinfo.nickname}</span>
+                </li>
+                <li className="nav-item">
+                  <a className="nav-link" href="javascript:void(0)" onClick={this.signOut}>
+                    退出
+                  </a>
+                </li>
+              </ul>
+            </span>
+          </div>
+        </nav>
+      </header>
+    )
   }
-
 }

@@ -1,32 +1,30 @@
-const webpack = require('webpack');
-const HtmlwebpackPlugin = require('html-webpack-plugin');
-const path = require('path');
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const webpack = require('webpack')
+const HtmlwebpackPlugin = require('html-webpack-plugin')
+const path = require('path')
+const chalk = require('chalk')
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+const ProgressBarPlugin = require('progress-bar-webpack-plugin')
 // const ServiceWorkerWebpackPlugin = require('serviceworker-webpack-plugin');
 
-const config = require('../index');
-const devMode = process.env.NODE_ENV !== 'production';
+const config = require('../index')
+const devMode = process.env.NODE_ENV === 'development'
 
 module.exports = {
-
   name: 'client',
   target: 'web',
 
   entry: {
-    app: [
-      '@babel/polyfill',
-      './src/client/index.js'
-    ]
+    app: ['@babel/polyfill', './src/client/index.js']
   },
 
   output: {
     path: path.resolve(__dirname, '../../dist/client'),
     filename: devMode ? '[name].bundle.js' : '[name].[hash].js',
-    publicPath: config.public_path + "/"
+    publicPath: config.publicPath + '/'
   },
 
   resolveLoader: {
-    moduleExtensions: ["-loader"]
+    moduleExtensions: ['-loader']
   },
 
   optimization: {
@@ -41,8 +39,8 @@ module.exports = {
           enforce: true
         },
         commons: {
-          test: /[\\/]node_modules[\\/]/,
           name: 'vendor',
+          test: /[\\/]node_modules[\\/]/,
           chunks: 'all'
         }
       }
@@ -51,30 +49,43 @@ module.exports = {
 
   module: {
     rules: [
-
       // js 文件解析
       {
         test: /\.js$/i,
         exclude: /node_modules/,
         loader: 'babel-loader'
       },
-
-      // scss 文件解析
       {
         test: /\.scss$/,
         use: [
           'css-hot-loader',
-          { loader: MiniCssExtractPlugin.loader },
+          {
+            loader: MiniCssExtractPlugin.loader
+          },
           {
             loader: `css`,
             options: {
               modules: true,
               localIdentName: config.class_scoped_name,
               minimize: true,
-              sourceMap: true
+              sourceMap: true,
+              importLoaders: 1
             }
           },
-          { loader: `sass` }
+          {
+            loader: `sass`
+          },
+          {
+            loader: 'postcss-loader',
+            options: {
+              plugins: () => [
+                require('postcss-flexbugs-fixes'),
+                require('autoprefixer')({
+                  browsers: ['last 2 versions']
+                })
+              ]
+            }
+          }
         ]
       },
 
@@ -83,21 +94,45 @@ module.exports = {
         test: /\.css$/,
         use: [
           'css-hot-loader',
-          { loader: MiniCssExtractPlugin.loader },
-          { loader: `css` }
+          {
+            loader: MiniCssExtractPlugin.loader
+          },
+          {
+            loader: `css`
+          },
+          {
+            loader: 'postcss-loader',
+            options: {
+              plugins: () => [
+                require('postcss-flexbugs-fixes'),
+                require('autoprefixer')({
+                  browsers: ['last 2 versions']
+                })
+              ]
+            }
+          }
         ]
       },
 
       // 小于8K的图片，转 base64
-      { test: /\.(png|jpg|gif)$/, loader: 'url?limit=8192' },
+      {
+        test: /\.(png|jpg|gif)$/,
+        loader: 'url?limit=8192'
+      },
 
       // 小于8K的字体，转 base64
-      { test: /\.(ttf|eot|svg|woff|woff2)(\?v=[0-9]\.[0-9]\.[0-9])?$/, loader: "file?limit=8192" }
-
+      {
+        test: /\.(ttf|eot|svg|woff|woff2)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+        loader: 'file?limit=8192'
+      }
     ]
   },
 
   plugins: [
+    // new webpack.ProvidePlugin({
+    //   $: "jquery",
+    //   jQuery: "jquery"
+    // }),
 
     new webpack.DefinePlugin({
       __SERVER__: 'false',
@@ -106,23 +141,30 @@ module.exports = {
 
     // 提取css插件
     new MiniCssExtractPlugin({
-      filename: devMode ? "[name].css" : "[name].[hash].css"
+      filename: devMode ? '[name].css' : '[name].[hash].css'
     }),
 
     // 创建视图模版文件，给server使用
     // 主要是打包后的添加的css、js静态文件路径添加到模版中
     new HtmlwebpackPlugin({
       filename: path.resolve(__dirname, '../../dist/server/index.ejs'),
-      template: 'src/view/index.html',
-      headMeta: '<%- meta %>',
+      template: 'src/views/index.html',
+      metaDom: '<%- meta %>',
       htmlDom: '<%- html %>',
-      reduxState: '<%- reduxState %>'
+      reduxState: '<%- reduxState %>',
+      head: config.head,
+      analysis_script: config.analysis_script
+      // inject: false
     }),
+
+    new ProgressBarPlugin({
+      format: '  build [:bar] ' + chalk.green.bold(':percent') + ' (:elapsed seconds)',
+      clear: false
+    })
 
     // serviceworker 还在研究中
     // new ServiceWorkerWebpackPlugin({
     //   entry: path.join(__dirname, 'client/sw.js'),
     // })
-
   ]
 }

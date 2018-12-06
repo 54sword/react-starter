@@ -1,10 +1,9 @@
-const baseConfig = require('./server.base');
-const path = require('path');
-const CleanWebpackPlugin = require('clean-webpack-plugin');
+const baseConfig = require('./server.base')
+const path = require('path')
+const CleanWebpackPlugin = require('clean-webpack-plugin')
 
 const config = {
   ...baseConfig,
-  mode: 'production',
   plugins: [
     // 清空打包目录
     new CleanWebpackPlugin(['dist'], {
@@ -13,7 +12,8 @@ const config = {
       dry: false
     }),
     ...baseConfig.plugins
-  ]
-};
+  ],
+  mode: 'production'
+}
 
-module.exports = config;
+module.exports = config

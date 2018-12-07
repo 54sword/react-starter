@@ -9,6 +9,8 @@ let config = {
   // 服务端口
   port: 4000,
 
+  analyzerPort: 4002,
+
   // 登录token，cookie 的名称
   auth_cookie_name: 'signin-cookie',
 

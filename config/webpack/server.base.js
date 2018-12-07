@@ -31,6 +31,13 @@ module.exports = {
     publicPath: config.publicPath + '/'
   },
 
+  resolve: {
+    alias: {
+      '@': path.resolve('src'),
+      Config: path.resolve('config/index')
+    }
+  },
+
   resolveLoader: {
     moduleExtensions: ['-loader']
   },

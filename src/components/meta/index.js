@@ -2,7 +2,7 @@ import React, { Component, Fragment } from 'react'
 import PropTypes from 'prop-types'
 import MetaTags, { ReactTitle } from 'react-meta-tags'
 
-import { name } from '../../../config'
+import { name } from 'Config'
 
 export default class Meta extends Component {
   constructor(props) {

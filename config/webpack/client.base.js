@@ -4,10 +4,27 @@ const path = require('path')
 const chalk = require('chalk')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const ProgressBarPlugin = require('progress-bar-webpack-plugin')
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
 // const ServiceWorkerWebpackPlugin = require('serviceworker-webpack-plugin');
 
 const config = require('../index')
 const devMode = process.env.NODE_ENV === 'development'
+
+/**
+ * 配置 autoprefixer 各浏览器前缀
+ * postcss-flexbugs-fixes 检查flex错误
+ *  */
+const postcssConfig = {
+  loader: 'postcss-loader',
+  options: {
+    plugins: () => [
+      require('postcss-flexbugs-fixes'),
+      require('autoprefixer')({
+        browsers: ['last 2 versions'] // https://browserl.ist/?q=last+2+version
+      })
+    ]
+  }
+}
 
 module.exports = {
   name: 'client',
@@ -21,6 +38,13 @@ module.exports = {
     path: path.resolve(__dirname, '../../dist/client'),
     filename: devMode ? '[name].bundle.js' : '[name].[hash].js',
     publicPath: config.publicPath + '/'
+  },
+
+  resolve: {
+    alias: {
+      '@': path.resolve('src'),
+      Config: path.resolve('config/index')
+    }
   },
 
   resolveLoader: {
@@ -75,17 +99,7 @@ module.exports = {
           {
             loader: `sass`
           },
-          {
-            loader: 'postcss-loader',
-            options: {
-              plugins: () => [
-                require('postcss-flexbugs-fixes'),
-                require('autoprefixer')({
-                  browsers: ['last 2 versions']
-                })
-              ]
-            }
-          }
+          { ...postcssConfig }
         ]
       },
 
@@ -100,17 +114,7 @@ module.exports = {
           {
             loader: `css`
           },
-          {
-            loader: 'postcss-loader',
-            options: {
-              plugins: () => [
-                require('postcss-flexbugs-fixes'),
-                require('autoprefixer')({
-                  browsers: ['last 2 versions']
-                })
-              ]
-            }
-          }
+          { ...postcssConfig }
         ]
       },
 
@@ -155,6 +159,11 @@ module.exports = {
       head: config.head,
       analysis_script: config.analysis_script
       // inject: false
+    }),
+
+    // 查看模块大小 端口默认为 8888
+    new BundleAnalyzerPlugin({
+      analyzerPort: config.analyzerPort
     }),
 
     new ProgressBarPlugin({

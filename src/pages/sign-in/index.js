@@ -4,12 +4,12 @@ import { Route, Link, withRouter } from 'react-router-dom'
 
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { signIn } from '../../store/actions/user'
+import { signIn } from '@/store/actions/user'
 
 import './style.scss'
 
-import Shell from '../../components/shell'
-import Meta from '../../components/meta'
+import Shell from '@/components/shell'
+import Meta from '@/components/meta'
 
 export class SignIn extends React.Component {
   constructor(props) {

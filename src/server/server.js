@@ -13,15 +13,15 @@ import { MetaTagsContext } from 'react-meta-tags'
 import Loadable from 'react-loadable'
 
 // 路由配置
-import configureStore from '../store'
+import configureStore from '@/store'
 // 路由组件
-import createRouter from '../router'
+import createRouter from '@/router'
 // 路由初始化的redux内容
-import { initialStateJSON } from '../store/reducers'
-import { saveAccessToken, saveUserInfo } from '../store/actions/user'
+import { initialStateJSON } from '@/store/reducers'
+import { saveAccessToken, saveUserInfo } from '@/store/actions/user'
 
 // 配置
-import { port, auth_cookie_name, api, redirectUrl } from '../../config'
+import { port, auth_cookie_name } from 'Config'
 import sign from './sign'
 // import webpackHotMiddleware from './webpack-hot-middleware';
 
@@ -61,40 +61,11 @@ app.use(function(req, res, next) {
   next()
 })
 
-const https = require('https')
-
 // 登录、退出
 app.use('/sign', sign())
 
 app.get('*', async (req, res) => {
-  const path = req.path
-  // 兼容老的URL跳转
-  if (path.indexOf('bangumi') !== -1) {
-    const url = path.split('/')
-    const pinyin = url[2]
-    // console.log(url.length, pinyin, url, path);
-    https.get(`${api}api.php?s=home-react-getVodId&pinyin=${pinyin}`, function(r) {
-      // console.log('statusCode:', r.statusCode);
-      // console.log('headers:', r.headers);
-      r.on('data', function(d) {
-        const data = JSON.parse(d)
-        if (data.data) {
-          const reUrl =
-            url.length === 4 && path.indexOf('.html') !== -1
-              ? `http:${redirectUrl}/play/${data.data}/${url[3].split('.')[0].split('-')[1]}`
-              : `http:${redirectUrl}/subject/${data.data}`
-          res.status(301)
-          res.redirect(reUrl)
-        } else {
-          res.redirect(redirectUrl)
-        }
-      })
-    })
-    return
-  }
-
   let store = configureStore(JSON.parse(initialStateJSON))
-
   let user = null
   let accessToken = req.cookies[auth_cookie_name] || ''
 

@@ -5,8 +5,8 @@ import { Provider } from 'react-redux'
 import { StaticRouter, matchPath } from 'react-router'
 import Loadable from 'react-loadable'
 
-import configureStore from '../store'
-import createRouter from '../router'
+import configureStore from '@/store'
+import createRouter from '@/router'
 
 // 引入 bootstrap
 import 'bootstrap/dist/css/bootstrap.min.css'
@@ -27,7 +27,7 @@ import '../pages/global.scss'
 // 从页面中获取服务端生产redux数据，作为客户端redux初始值
 const store = configureStore(window.__initState__)
 
-import { getUserInfo } from '../store/reducers/user'
+import { getUserInfo } from '@/store/reducers/user'
 
 let userinfo = getUserInfo(store.getState())
 

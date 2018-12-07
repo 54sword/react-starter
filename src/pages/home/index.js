@@ -1,14 +1,10 @@
 import React from 'react'
-import PropTypes from 'prop-types'
-import { loadPostsList } from '../../store/actions/posts'
-
-// http://blog.csdn.net/ISaiSai/article/details/78094556
 import { withRouter } from 'react-router-dom'
 
 // 壳组件
-import Shell from '../../components/shell'
-import Meta from '../../components/meta'
-import PostsList from '../../components/posts/list'
+import Shell from '@/components/shell'
+import Meta from '@/components/meta'
+import PostsList from '@/components/posts/list'
 
 @Shell
 @withRouter

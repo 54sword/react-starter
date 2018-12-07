@@ -1,6 +1,8 @@
 const baseConfig = require('./client.base')
 const WebpackParallelUglifyPlugin = require('webpack-parallel-uglify-plugin')
-
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
+const analyzerPort = require('../index').analyzerPort
+console.log(analyzerPort)
 // const path = require('path');
 
 const config = {
@@ -19,6 +21,10 @@ const config = {
           reduce_vars: true // 提取出出现多次但是没有定义成变量去引用的静态值
         }
       }
+    }),
+    // 查看模块大小 端口默认为 8888
+    new BundleAnalyzerPlugin({
+      analyzerPort
     }),
     // new ManifestPlugin({ fileName: 'manifest.json' }),
     ...baseConfig.plugins

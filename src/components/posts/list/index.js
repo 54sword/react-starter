@@ -3,8 +3,8 @@ import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { loadPostsList } from '../../../actions/posts'
-import { getPostsListByListId } from '../../../reducers/posts'
+import { loadPostsList } from '../../../store/actions/posts'
+import { getPostsListByListId } from '../../../store/reducers/posts'
 
 import './style.scss'
 

@@ -4,7 +4,7 @@ import { Route, Link, withRouter } from 'react-router-dom'
 
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { signIn } from '../../actions/user'
+import { signIn } from '../../store/actions/user'
 
 import './style.scss'
 

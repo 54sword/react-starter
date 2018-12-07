@@ -17,8 +17,8 @@ import configureStore from '../store'
 // 路由组件
 import createRouter from '../router'
 // 路由初始化的redux内容
-import { initialStateJSON } from '../reducers'
-import { saveAccessToken, saveUserInfo } from '../actions/user'
+import { initialStateJSON } from '../store/reducers'
+import { saveAccessToken, saveUserInfo } from '../store/actions/user'
 
 // 配置
 import { port, auth_cookie_name, api, redirectUrl } from '../../config'

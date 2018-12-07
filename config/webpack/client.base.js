@@ -9,7 +9,21 @@ const ProgressBarPlugin = require('progress-bar-webpack-plugin')
 const config = require('../index')
 const devMode = process.env.NODE_ENV === 'development'
 
-console.log(path.resolve('src/'), path.resolve('config/'))
+/**
+ * 配置 autoprefixer 各浏览器前缀
+ * postcss-flexbugs-fixes 检查flex错误
+ *  */
+const postcssConfig = {
+  loader: 'postcss-loader',
+  options: {
+    plugins: () => [
+      require('postcss-flexbugs-fixes'),
+      require('autoprefixer')({
+        browsers: ['last 2 versions'] // https://browserl.ist/?q=last+2+version
+      })
+    ]
+  }
+}
 
 module.exports = {
   name: 'client',
@@ -84,17 +98,7 @@ module.exports = {
           {
             loader: `sass`
           },
-          {
-            loader: 'postcss-loader',
-            options: {
-              plugins: () => [
-                require('postcss-flexbugs-fixes'),
-                require('autoprefixer')({
-                  browsers: ['last 2 versions']
-                })
-              ]
-            }
-          }
+          { ...postcssConfig }
         ]
       },
 
@@ -109,17 +113,7 @@ module.exports = {
           {
             loader: `css`
           },
-          {
-            loader: 'postcss-loader',
-            options: {
-              plugins: () => [
-                require('postcss-flexbugs-fixes'),
-                require('autoprefixer')({
-                  browsers: ['last 2 versions']
-                })
-              ]
-            }
-          }
+          { ...postcssConfig }
         ]
       },
 

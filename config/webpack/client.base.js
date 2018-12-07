@@ -4,6 +4,7 @@ const path = require('path')
 const chalk = require('chalk')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const ProgressBarPlugin = require('progress-bar-webpack-plugin')
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
 // const ServiceWorkerWebpackPlugin = require('serviceworker-webpack-plugin');
 
 const config = require('../index')
@@ -158,6 +159,11 @@ module.exports = {
       head: config.head,
       analysis_script: config.analysis_script
       // inject: false
+    }),
+
+    // 查看模块大小 端口默认为 8888
+    new BundleAnalyzerPlugin({
+      analyzerPort: config.analyzerPort
     }),
 
     new ProgressBarPlugin({

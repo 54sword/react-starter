@@ -1,36 +1,34 @@
-import React from 'react';
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
+import React from 'react'
+import { bindActionCreators } from 'redux'
+import { connect } from 'react-redux'
 
-import parseUrl from '../common/parse-url';
+import parseUrl from '@/common/parse-url'
 
 // 壳组件，用于给页面组件，套一个外壳
 // 这样可以通过壳组件，给每个页面，传递参数
 
-const Shell = (Component) => {
-
+const Shell = Component => {
   if (!Component.loadData) {
     Component.loadData = ({ store, match }) => {
-      return new Promise(async function (resolve, reject) {
-        resolve({ code:200 });
+      return new Promise(async function(resolve, reject) {
+        resolve({ code: 200 })
       })
     }
   }
 
   class Shell extends React.Component {
-
     static defaultProps = {
       loadData: Component.loadData || null
     }
 
     constructor(props) {
-      super(props);
+      super(props)
+      const { search } = props.location
+      this.props.location.params = search ? parseUrl(search) : null
     }
 
     // 组件加载完成
     componentWillMount() {
-      const { search } = this.props.location;
-      this.props.location.params = search ? parseUrl(search) : null;
       // console.log('进入组件')
     }
 
@@ -50,30 +48,30 @@ const Shell = (Component) => {
     }
 
     render() {
-      return (<div>
-        <Component {...this.props} />
-      </div>)
+      return (
+        <div>
+          <Component {...this.props} />
+        </div>
+      )
     }
-
   }
 
-  Shell.contextTypes = {
-  }
+  Shell.contextTypes = {}
 
-  Shell.propTypes = {
-  }
+  Shell.propTypes = {}
 
-  const mapStateToProps = (state) => {
-    return {
-    }
+  const mapStateToProps = state => {
+    return {}
   }
 
   const mapDispatchToProps = (dispatch, props) => {
-    return {
-    }
+    return {}
   }
 
-  return connect(mapStateToProps, mapDispatchToProps)(Shell);
+  return connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(Shell)
 }
 
-export default Shell;
+export default Shell

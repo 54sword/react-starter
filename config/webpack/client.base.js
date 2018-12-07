@@ -9,6 +9,8 @@ const ProgressBarPlugin = require('progress-bar-webpack-plugin')
 const config = require('../index')
 const devMode = process.env.NODE_ENV === 'development'
 
+console.log(path.resolve('src/'), path.resolve('config/'))
+
 module.exports = {
   name: 'client',
   target: 'web',
@@ -21,6 +23,13 @@ module.exports = {
     path: path.resolve(__dirname, '../../dist/client'),
     filename: devMode ? '[name].bundle.js' : '[name].[hash].js',
     publicPath: config.publicPath + '/'
+  },
+
+  resolve: {
+    alias: {
+      '@': path.resolve('src'),
+      Config: path.resolve('config/index')
+    }
   },
 
   resolveLoader: {

@@ -1,4 +1,4 @@
-import Ajax from '../../common/ajax'
+import Ajax from '@/common/ajax'
 import { getPostsListByListId } from '../reducers/posts'
 
 export function loadPostsList({ id, filter = {} }) {

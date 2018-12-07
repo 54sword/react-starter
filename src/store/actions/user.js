@@ -1,4 +1,4 @@
-import Ajax from '../../common/ajax'
+import Ajax from '@/common/ajax'
 
 // 储存accessToken到redux
 export function saveAccessToken({ accessToken }) {

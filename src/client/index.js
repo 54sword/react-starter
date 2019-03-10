@@ -5,6 +5,9 @@ import { Provider } from 'react-redux'
 import { StaticRouter, matchPath } from 'react-router'
 import Loadable from 'react-loadable'
 
+import * as OfflinePluginRuntime from 'offline-plugin/runtime';
+OfflinePluginRuntime.install();
+
 import configureStore from '@/store'
 import createRouter from '@/router'
 

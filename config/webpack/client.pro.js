@@ -1,8 +1,8 @@
 const baseConfig = require('./client.base')
 const WebpackParallelUglifyPlugin = require('webpack-parallel-uglify-plugin')
-const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
+// const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
 const analyzerPort = require('../index').analyzerPort
-console.log(analyzerPort)
+// console.log(analyzerPort)
 // const path = require('path');
 
 const config = {
@@ -23,9 +23,9 @@ const config = {
       }
     }),
     // 查看模块大小 端口默认为 8888
-    new BundleAnalyzerPlugin({
-      analyzerPort
-    }),
+    // new BundleAnalyzerPlugin({
+    //   analyzerPort
+    // }),
     // new ManifestPlugin({ fileName: 'manifest.json' }),
     ...baseConfig.plugins
   ],

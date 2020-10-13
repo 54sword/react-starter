@@ -1,0 +1,67 @@
+{
+  "extends": [
+    "standard",
+    "eslint:recommended",
+    "plugin:prettier/recommended",
+    "plugin:react/recommended",
+    "plugin:react-hooks/recommended",
+    "prettier",
+    "prettier/react",
+    "prettier/babel",
+    "prettier/standard"
+  ],
+  "globals": {
+    "describe": true,
+    "beforeEach": true,
+    "afterEach": true,
+    "after": true,
+    "it": true,
+    "ArriveFooter": true,
+    "__CLIENT__": true,
+    "__SERVER__": true,
+    "adsbygoogle": true
+  },
+  "plugins": ["react-hooks", "react", "babel"],
+  "parser": "babel-eslint",
+  "env": {
+    "es6": true,
+    "browser": true,
+    "node": true
+  },
+  "rules": {
+    "no-console": "off",
+    "no-debugger": "off",
+    "no-unused-vars": 0,
+    "react/jsx-uses-react": "error",
+    "react/jsx-uses-vars": "error",
+    "react/no-render-return-value": "off",
+    "react-hooks/rules-of-hooks": "error",
+    "react-hooks/exhaustive-deps": [
+      "warn",
+      {
+        "additionalHooks": "(useMyCustomHook|useMyOtherCustomHook)"
+      }
+    ],
+    "react/display-name": "off",
+    "prettier/prettier": [
+      "error",
+      {
+        "jsxSingleQuote": true,
+        "singleQuote": true,
+        "parser": "flow",
+        "semi": false,
+        "arrowParens": "avoid",
+        "printWidth": 140,
+        "trailingComma": "none"
+      }
+    ]
+  },
+  "parserOptions": {
+    "ecmaVersion": 7,
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "jsx": true,
+      "experimentalObjectRestSpread": true
+    }
+  }
+}

@@ -1,49 +1,57 @@
-import React from 'react'
-import ReactDOM from 'react-dom'
-import { BrowserRouter } from 'react-router-dom'
-import { Provider } from 'react-redux'
-import { StaticRouter, matchPath } from 'react-router'
-import Loadable from 'react-loadable'
-
-import * as OfflinePluginRuntime from 'offline-plugin/runtime';
-OfflinePluginRuntime.install();
-
-import configureStore from '@/store'
-import createRouter from '@/router'
-
 // 引入 bootstrap
 import 'bootstrap/dist/css/bootstrap.min.css'
 import 'jquery'
 import 'popper.js'
 import 'bootstrap/dist/js/bootstrap.min.js'
 
+import { hot, setConfig } from 'react-hot-loader'
+import React from 'react'
+import ReactDOM from 'react-dom'
+import { BrowserRouter } from 'react-router-dom'
+import { Provider } from 'react-redux'
+import { matchPath } from 'react-router'
+import { loadableReady } from '@loadable/component'
+
+import './service-worker'
+
 // 引入全局样式
-import '../pages/global.scss'
+import '../app/pages/global.scss'
 
-// import runtime from 'serviceworker-webpack-plugin/lib/runtime'
-// if ('serviceWorker' in navigator) {
-//   const registration = runtime.register();
-// } else {
-//   console.log("Don't support serviceWorker")
-// }
-
-// 从页面中获取服务端生产redux数据，作为客户端redux初始值
-const store = configureStore(window.__initState__)
-
+import configureStore from '@/store'
+import createRouter from '@/router'
 import { getUserInfo } from '@/store/reducers/user'
 
-let userinfo = getUserInfo(store.getState())
+import { domain, debug } from 'Config'
 
-if (!userinfo || !userinfo.id) userinfo = null
+setConfig({ logLevel: 'debug', reloadHooks: false })
 
-const run = async () => {
-  const router = createRouter(userinfo)
-  const RouterDom = router.dom
+if (!debug) {
+  const { origin, pathname } = window.location
+  // 打开的不是目标网站跳转到目标网站
+  if (origin !== domain) {
+    window.location.href = domain + pathname
+  }
+  // 禁止被iframe
+  if (window.top !== window.self) {
+    window.top.location = window.location
+  }
+}
+
+;(async function () {
+  // 从页面中获取服务端生产redux数据，作为客户端redux初始值
+  const store = configureStore(window.__initState__)
+  let userinfo = getUserInfo(store.getState())
+  if (!userinfo || !userinfo.id) userinfo = {}
+  let enterEvent = () => {}
+  const { href, pathname } = window.location
+
+  const router = createRouter({ user: userinfo, enterEvent })
+  const Page = hot(module)(router.dom)
 
   let _route = null
 
   router.list.some(route => {
-    let match = matchPath(window.location.pathname, route)
+    const match = matchPath(pathname, route)
     if (match && match.path) {
       _route = route
       return true
@@ -51,24 +59,28 @@ const run = async () => {
   })
 
   // 预先加载首屏的js（否则会出现，loading 一闪的情况）
-  // if (_route && _route.component && _route.component.preload && _route.loadData) {
-  await _route.component.preload()
-  // }
+  await _route.body.preload()
 
-  ReactDOM.hydrate(
-    <Provider store={store}>
-      <BrowserRouter>
-        <RouterDom />
-      </BrowserRouter>
-    </Provider>,
-    document.getElementById('app')
-  )
+  const renderMethod = module.hot ? ReactDOM.render : ReactDOM.hydrate
+  loadableReady(() => {
+    renderMethod(
+      <Provider store={store}>
+        <BrowserRouter>
+          <Page />
+        </BrowserRouter>
+      </Provider>,
+      document.getElementById('app')
+    )
+  })
 
-  if (process.env.NODE_ENV === 'development') {
+  if (debug) {
     if (module.hot) {
       module.hot.accept()
     }
   }
-}
 
-run()
+  // 解决在 ios safari iframe 上touchMove 滚动后，外部的点击事件会无效的问题
+  document.addEventListener('touchmove', function (e) {
+    e.preventDefault()
+  })
+})()

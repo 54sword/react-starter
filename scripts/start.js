@@ -16,8 +16,11 @@ const compilerPromise = compiler => {
       if (!stats.hasErrors()) {
         return resolve()
       }
+      // eslint-disable-next-line prefer-promise-reject-errors
       return reject('Compilation failed')
     })
+  }).catch(function (reason) {
+    console.log('errcatch:', reason)
   })
 }
 
@@ -27,13 +30,19 @@ const WEBPACK_PORT = config.port + 1
 const start = async () => {
   rimraf.sync('./dist')
 
-  clientConfig.entry.app.unshift(`webpack-hot-middleware/client?path=http://localhost:${WEBPACK_PORT}/__webpack_hmr`)
+  let publicPath = config.public_path.split(':')
+
+  publicPath.pop()
+
+  publicPath = publicPath.join(':')
+
+  clientConfig.entry.app.unshift(`webpack-hot-middleware/client?path=${publicPath}:${WEBPACK_PORT}/__webpack_hmr`)
 
   clientConfig.output.hotUpdateMainFilename = `[hash].hot-update.json`
   clientConfig.output.hotUpdateChunkFilename = `[id].[hash].hot-update.js`
 
-  clientConfig.output.publicPath = `http://localhost:${WEBPACK_PORT}/`
-  serverConfig.output.publicPath = `http://localhost:${WEBPACK_PORT}/`
+  clientConfig.output.publicPath = `${publicPath}:${WEBPACK_PORT}/`
+  serverConfig.output.publicPath = `${publicPath}:${WEBPACK_PORT}/`
 
   const clientCompiler = webpack([clientConfig, serverConfig])
 
@@ -64,12 +73,17 @@ const start = async () => {
   // 服务端代码更新监听
   _serverCompiler.watch({ ignored: /node_modules/ }, (error, stats) => {
     if (!error && !stats.hasErrors()) {
-      console.log(stats.toString(serverConfig.stats))
+      console.log('------error----' + stats.toString(serverConfig.stats))
       return
     }
     if (error) {
-      console.log(error, 'error')
+      console.log(error, '-------error-------')
     }
+  })
+
+  process.on('unhandledRejection', (reason, p) => {
+    console.log('Unhandled Rejection at: Promise', p, 'reason:', reason)
+    // application specific logging, throwing an error, or other logic here
   })
 
   await serverPromise

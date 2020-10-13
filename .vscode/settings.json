@@ -1,0 +1,36 @@
+{
+  "editor.tabSize": 2,
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.codeActionsOnSave": {
+    // For ESLint
+    "source.fixAll.eslint": true,
+    // For TSLint
+    "source.fixAll.tslint": true,
+    // For Stylelint
+    "source.fixAll.stylelint": true
+  },
+  "files.associations": {
+    "*.js": "javascript"
+  },
+  "emmet.triggerExpansionOnTab": true,
+  "eslint.options": {
+    "extensions": [".js", ".jsx"],
+    "plugins": ["html"]
+  },
+  "javascript.implicitProjectConfig.experimentalDecorators": true,
+  "javascript.updateImportsOnFileMove.enabled": "always",
+  "javascript.suggestionActions.enabled": false,
+  "javascript.validate.enable": false,
+  "prettier.jsxSingleQuote": true,
+  "prettier.jsxBracketSameLine": false,
+  "prettier.disableLanguages": ["react"],
+  "prettier.printWidth": 140,
+  "prettier.singleQuote": true,
+  "prettier.semi": false,
+  "prettier.arrowParens": "avoid",
+  "prettier.trailingComma": "none",
+  "vsicons.dontShowNewVersionMessage": true,
+  "window.zoomLevel": 1,
+  "workbench.iconTheme": "vscode-icons"
+}

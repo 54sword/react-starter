@@ -1,10 +1,11 @@
 const webpack = require('webpack')
-const HtmlwebpackPlugin = require('html-webpack-plugin')
 const path = require('path')
 const chalk = require('chalk')
+const HtmlwebpackPlugin = require('html-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
-const ProgressBarPlugin = require('progress-bar-webpack-plugin')
-const OfflinePlugin = require('offline-plugin');
+const TerserPlugin = require('terser-webpack-plugin')
+const WebpackBar = require('webpackbar')
+const LoadablePlugin = require('@loadable/webpack-plugin')
 
 const config = require('../index')
 const devMode = process.env.NODE_ENV === 'development'
@@ -16,12 +17,9 @@ const devMode = process.env.NODE_ENV === 'development'
 const postcssConfig = {
   loader: 'postcss-loader',
   options: {
-    plugins: () => [
-      require('postcss-flexbugs-fixes'),
-      require('autoprefixer')({
-        browsers: ['last 2 versions'] // https://browserl.ist/?q=last+2+version
-      })
-    ]
+    postcssOptions: {
+      plugins: ['postcss-flexbugs-fixes', 'autoprefixer']
+    }
   }
 }
 
@@ -29,21 +27,23 @@ module.exports = {
   name: 'client',
   target: 'web',
 
+  resolve: {
+    extensions: ['.ts', '.tsx', '.js'],
+    alias: {
+      '@': path.resolve('src/app'),
+      'react-dom': '@hot-loader/react-dom',
+      Config: path.resolve('config/index')
+    }
+  },
+
   entry: {
-    app: ['@babel/polyfill', './src/client/index.js']
+    app: ['@babel/polyfill', './src/client/index']
   },
 
   output: {
     path: path.resolve(__dirname, '../../dist/client'),
     filename: devMode ? '[name].bundle.js' : '[name].[hash].js',
-    publicPath: config.public_path + '/'
-  },
-
-  resolve: {
-    alias: {
-      '@': path.resolve('src'),
-      Config: path.resolve('config/index')
-    }
+    publicPath: config.publicPath + '/'
   },
 
   resolveLoader: {
@@ -51,8 +51,24 @@ module.exports = {
   },
 
   optimization: {
-    namedModules: true,
-    noEmitOnErrors: true,
+    // namedModules: true,
+    // noEmitOnErrors: true,
+    minimize: !devMode,
+    minimizer: [
+      new TerserPlugin({
+        cache: true,
+        parallel: true,
+        sourceMap: true,
+        terserOptions: {
+          compress: {
+            // 关键代码
+            warnings: true,
+            drop_debugger: true,
+            drop_console: true
+          }
+        }
+      })
+    ],
     splitChunks: {
       cacheGroups: {
         styles: {
@@ -76,27 +92,36 @@ module.exports = {
       {
         test: /\.js$/i,
         exclude: /node_modules/,
-        loader: 'babel-loader'
+        loader: 'babel'
       },
       {
         test: /\.scss$/,
+        // test: /\.(sa|sc|c)ss$/,
         use: [
-          'css-hot-loader',
+          'css-hot',
           {
             loader: MiniCssExtractPlugin.loader
           },
           {
             loader: `css`,
             options: {
-              modules: true,
-              localIdentName: config.class_scoped_name,
-              minimize: true,
+              modules: {
+                localIdentName: config.classScopedName
+              },
               sourceMap: true,
               importLoaders: 1
             }
           },
           {
-            loader: `sass`
+            loader: `sass`,
+            options: {
+              // Prefer `dart-sass`
+              implementation: require('sass'),
+              sassOptions: {
+                fiber: false
+              },
+              additionalData: '@import "~@/pages/variables.scss";'
+            }
           },
           { ...postcssConfig }
         ]
@@ -106,7 +131,7 @@ module.exports = {
       {
         test: /\.css$/,
         use: [
-          'css-hot-loader',
+          'css-hot',
           {
             loader: MiniCssExtractPlugin.loader
           },
@@ -119,24 +144,31 @@ module.exports = {
 
       // 小于8K的图片，转 base64
       {
-        test: /\.(png|jpg|gif)$/,
-        loader: 'url?limit=8192'
+        test: /\.(png|jpe?g|gif|bmp|svg)$/,
+        use: [
+          {
+            loader: 'url',
+            options: {
+              // 配置图片编译路径
+              limit: 8192, // 小于8k将图片转换成base64
+              name: '[name].[hash:8].[ext]',
+              outputPath: 'images/'
+            }
+          }
+        ]
       },
-
-      // 小于8K的字体，转 base64
       {
-        test: /\.(ttf|eot|svg|woff|woff2)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
-        loader: 'file?limit=8192'
+        test: /\.(woff2?|eot|ttf|otf)(\?.*)?$/,
+        loader: 'url',
+        options: {
+          limit: 8192,
+          name: 'fonts/[name].[hash:8].[ext]'
+        }
       }
     ]
   },
 
   plugins: [
-    // new webpack.ProvidePlugin({
-    //   $: "jquery",
-    //   jQuery: "jquery"
-    // }),
-
     new webpack.DefinePlugin({
       __SERVER__: 'false',
       __CLIENT__: 'true'
@@ -144,34 +176,25 @@ module.exports = {
 
     // 提取css插件
     new MiniCssExtractPlugin({
-      filename: devMode ? '[name].css' : '[name].[hash].css'
+      filename: devMode ? '[name].css' : '[name].[hash].css',
+      allChunks: true,
+      ignoreOrder: true
     }),
 
-    new OfflinePlugin({
-      autoUpdate: 1000 * 60 * 5,
-      ServiceWorker: {
-        publicPath: '/sw.js'
-      }
-    }),
+    new WebpackBar(),
+    new LoadablePlugin(),
 
     // 创建视图模版文件，给server使用
     // 主要是打包后的添加的css、js静态文件路径添加到模版中
     new HtmlwebpackPlugin({
       filename: path.resolve(__dirname, '../../dist/server/index.ejs'),
-      template: 'src/views/index.html',
+      template: `src/app/views/index${devMode ? '_dev' : ''}.html`,
       metaDom: '<%- meta %>',
       htmlDom: '<%- html %>',
       reduxState: '<%- reduxState %>',
-      head: config.head,
-      analysis_script: config.analysis_script
+      debug: '<%- debug %>',
+      head: config.head
       // inject: false
-    }),
-
-    new ProgressBarPlugin({
-      format: '  build [:bar] ' + chalk.green.bold(':percent') + ' (:elapsed seconds)',
-      clear: false
     })
-
-
   ]
 }

@@ -1,35 +1,46 @@
 const baseConfig = require('./client.base')
-const WebpackParallelUglifyPlugin = require('webpack-parallel-uglify-plugin')
-// const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
-const analyzerPort = require('../index').analyzerPort
-// console.log(analyzerPort)
-// const path = require('path');
+const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin')
+const OfflinePlugin = require('offline-plugin')
+const CopyPlugin = require('copy-webpack-plugin')
+const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 
-const config = {
+const webpackConfig = {
+  mode: 'production',
   ...baseConfig,
   plugins: [
-    new WebpackParallelUglifyPlugin({
-      uglifyJS: {
-        output: {
-          beautify: false, //不需要格式化
-          comments: false //不保留注释
-        },
-        compress: {
-          warnings: false, // 在UglifyJs删除没有用到的代码时不输出警告
-          drop_console: true, // 删除所有的 `console` 语句，可以兼容ie浏览器
-          collapse_vars: true, // 内嵌定义了但是只用到一次的变量
-          reduce_vars: true // 提取出出现多次但是没有定义成变量去引用的静态值
-        }
-      }
+    // 清空打包目录
+    new CleanWebpackPlugin(),
+    new CopyPlugin({
+      patterns: [{ from: 'src/static/img/favicon.png', to: 'favicon.png' }]
     }),
-    // 查看模块大小 端口默认为 8888
-    // new BundleAnalyzerPlugin({
-    //   analyzerPort
-    // }),
-    // new ManifestPlugin({ fileName: 'manifest.json' }),
+
+    new OptimizeCSSAssetsPlugin({
+      assetNameRegExp: /\.css\.*(?!.*map)/g, // 注意不要写成 /\.css$/g
+      cssProcessor: require('cssnano'),
+      cssProcessorOptions: {
+        discardComments: {
+          removeAll: true
+        },
+        // 避免 cssnano 重新计算 z-index
+        safe: true,
+        // cssnano 集成了autoprefixer的功能
+        // 会使用到autoprefixer进行无关前缀的清理
+        // 关闭autoprefixer功能
+        // 使用postcss的autoprefixer功能
+        autoprefixer: false
+      },
+      canPrint: true
+    }),
+    new OfflinePlugin({
+      autoUpdate: 1000 * 60 * 5,
+      ServiceWorker: {
+        publicPath: '/sw.js'
+      },
+      // 排除不需要缓存的文件
+      excludes: ['../server/index.ejs']
+    }),
     ...baseConfig.plugins
-  ],
-  mode: 'production'
+  ]
 }
 
-module.exports = config
+module.exports = webpackConfig

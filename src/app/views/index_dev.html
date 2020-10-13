@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <%= htmlWebpackPlugin.options.head %> <%= htmlWebpackPlugin.options.metaDom %>
+</head>
+<body>
+  <div id="app"><%= htmlWebpackPlugin.options.htmlDom %></div>
+  <script>
+    window.__initState__ = <%= htmlWebpackPlugin.options.reduxState %>
+  </script>
+</body>
+
+</html>

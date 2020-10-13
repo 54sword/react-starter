@@ -1,45 +1,66 @@
 const webpack = require('webpack')
-// const HtmlwebpackPlugin = require('html-webpack-plugin');
 const path = require('path')
+const chalk = require('chalk')
 const nodeExternals = require('webpack-node-externals')
-// const CopyWebpackPlugin = require('copy-webpack-plugin');
+const WebpackBar = require('webpackbar')
+const TerserPlugin = require('terser-webpack-plugin')
+const LoadablePlugin = require('@loadable/webpack-plugin')
 
 const config = require('../index')
+const devMode = process.env.NODE_ENV === 'development'
 
 module.exports = {
   name: 'server',
   target: 'node',
 
+  resolve: {
+    extensions: ['.ts', '.tsx', '.js'],
+    alias: {
+      '@': path.resolve('src/app'),
+      'react-dom': '@hot-loader/react-dom',
+      Config: path.resolve('config/index')
+    }
+  },
+
   entry: {
-    app: [
-      // '@babel/polyfill',
-      './src/server/index'
-    ]
+    app: ['./src/server/index']
   },
 
   externals: [
     nodeExternals({
       // we still want imported css from external files to be bundled otherwise 3rd party packages
       // which require us to include their own css would not work properly
-      whitelist: /\.css$/
+      allowlist: /\.css$/
     })
   ],
 
   output: {
     path: path.resolve(__dirname, '../../dist/server'),
     filename: 'server.js',
-    publicPath: config.public_path + '/'
-  },
-
-  resolve: {
-    alias: {
-      '@': path.resolve('src'),
-      Config: path.resolve('config/index')
-    }
+    publicPath: config.publicPath + '/'
   },
 
   resolveLoader: {
     moduleExtensions: ['-loader']
+  },
+
+  optimization: {
+    minimize: !devMode,
+    minimizer: [
+      new TerserPlugin({
+        cache: true,
+        parallel: true,
+        sourceMap: true,
+        terserOptions: {
+          compress: {
+            // 关键代码
+            warnings: true,
+            drop_debugger: true,
+            drop_console: true
+          }
+        }
+      })
+    ]
   },
 
   module: {
@@ -54,33 +75,43 @@ module.exports = {
       // scss 文件解析
       {
         test: /\.scss$/,
+        // test: /\.(sa|sc|c)ss$/,
         use: [
           {
-            loader: `css/locals`,
+            loader: `css`,
             options: {
-              modules: true,
-              localIdentName: config.class_scoped_name
-              // minimize: true,
-              // sourceMap: true
-
-              // camelCase: true,
-              // importLoaders: 1,
-              // modules: true,
-              // localIdentName: config.class_scoped_name
+              modules: {
+                localIdentName: config.classScopedName,
+                exportOnlyLocals: true
+              }
+              // onlyLocals: true // 只映射，不打包CSS
             }
           },
           {
-            loader: `sass`
+            loader: `sass`,
+            options: {
+              // Prefer `dart-sass`
+              implementation: require('sass'),
+              sassOptions: {
+                fiber: false
+              },
+              additionalData: '@import "~@/pages/variables.scss";'
+            }
           }
         ]
       },
 
-      // css 解析
+      // css 文件解析
       {
         test: /\.css$/,
         use: [
           {
-            loader: `css/locals`
+            loader: `css`,
+            options: {
+              modules: {
+                exportOnlyLocals: true // 只映射，不打包CSS
+              }
+            }
           }
         ]
       }
@@ -91,10 +122,8 @@ module.exports = {
     new webpack.DefinePlugin({
       __SERVER__: 'true',
       __CLIENT__: 'false'
-    })
-
-    // new CopyWebpackPlugin([
-    //   { from: 'src/server/amp/views', to: 'views/' }
-    // ])
+    }),
+    new WebpackBar(),
+    new LoadablePlugin()
   ]
 }

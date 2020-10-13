@@ -70,6 +70,21 @@ pm2 start ./dist/server/server.js --name "react-starter" --max-memory-restart 40
 
 ## 更新
 
+### 2020 年 10 月 13 日
+
+- 所有页面使用 `hooks` 重构
+- 优化 `redux` 写法
+- 所有依赖包升级到最新,除 `webpack` 没有升级到 5.0
+- `react-loadable` 替换成 `@loadable/component`
+- 增加了 `react-hot-loader` react 热更新
+- 增加了全局 CSS 变量 `additionalData: '@import "~@/pages/variables.scss";'`，见 webpack 配置文件
+- 更多自己 clone 下来和老的对比下。
+
+### 2020 年 08 月 31 日
+
+- `progress-bar-webpack-plugin`替换成`WebpackBar`
+- `node-sass`替换成`dart-sass`
+
 ### 2018 年 12 月 7 日
 
 - 增加 webpack-bundle-analyzer 查看模块大小

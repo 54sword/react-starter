@@ -1,6 +1,6 @@
 {
   "name": "react-starter",
-  "version": "2.0.1",
+  "version": "2.1.0",
   "description": "React 同构脚手架",
   "scripts": {
     "start": "cross-env NODE_ENV=development node ./scripts/start.js",
@@ -28,7 +28,6 @@
     "express": "^4.17.1",
     "helmet": "^4.1.0",
     "jquery": "^3.5.1",
-    "lodash": "^4.17.20",
     "lru-cache": "^6.0.0",
     "offline-plugin": "^5.0.7",
     "popper.js": "^1.16.1",
@@ -41,8 +40,7 @@
     "react-router-dom": "^5.2.0",
     "redux": "^4.0.5",
     "redux-logger": "^3.0.6",
-    "redux-thunk": "^2.3.0",
-    "use-react-router": "^1.0.7"
+    "redux-thunk": "^2.3.0"
   },
   "devDependencies": {
     "@babel/core": "^7.11.6",
@@ -107,9 +105,8 @@
     "write-file-webpack-plugin": "^4.5.1"
   },
   "browserslist": [
-    ">0.2%",
-    "not dead",
-    "not ie <= 9",
-    "not op_mini all"
+    "> 1%",
+    "last 2 versions",
+    "not ie <= 10"
   ]
 }
